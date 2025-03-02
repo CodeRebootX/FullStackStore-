@@ -1,0 +1,2 @@
+C:/Users/rolan/Documents/Frontend/proyecto_final_flutter/android/app/.cxx/Debug/2z222j2h/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/rolan/Documents/Frontend/proyecto_final_flutter/android/app/.cxx/Debug/2z222j2h/armeabi-v7a/CMakeFiles/rebuild_cache.dir
