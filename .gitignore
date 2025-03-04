@@ -54,6 +54,7 @@ target/
 .mvn/
 !**/src/main/**
 !**/src/test/**
+backend/logs/
 
 # IDE Specific
 /.vscode/

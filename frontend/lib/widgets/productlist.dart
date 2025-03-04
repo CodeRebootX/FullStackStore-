@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:inicio_sesion/commons/priceformat.dart';
-import '../models/product.dart';
+import 'package:frontend_flutter/commons/priceformat.dart';
+import '../data/models/product.dart';
 import '../commons/images.dart';
 import '../commons/constants.dart';
 
@@ -33,7 +33,7 @@ class ProductListItem extends StatelessWidget {
               width: 100,
               height: 100,
               child: Image(
-                image: Images.getImageProvider(producto.imagen),
+                image: Images.getImageProvider(producto.imagenPath),
                 fit: BoxFit.cover,
               ),
             ),

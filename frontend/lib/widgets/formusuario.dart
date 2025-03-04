@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:inicio_sesion/models/user.dart';
-import 'package:inicio_sesion/commons/validations.dart';
-import 'package:inicio_sesion/commons/images.dart';
+import 'package:frontend_flutter/data/models/user.dart';
+import 'package:frontend_flutter/commons/validations.dart';
+import 'package:frontend_flutter/commons/images.dart';
 
 class FormUsuario extends StatelessWidget {
   final User? usuarioModified;
@@ -11,10 +11,10 @@ class FormUsuario extends StatelessWidget {
   final TextEditingController userController;
   final TextEditingController passwordController;
   final TextEditingController ageController;
-  final String selectedTratement;
+  final String selectedTitle;
   final String? imagenPath;
   final bool isAdmin;
-  final Function(String?) onTratementChanged;
+  final Function(String?) onTitleChanged;
   final Function(String?) onImageChanged;
   final Function(bool?) onAdminChanged;
 
@@ -26,10 +26,10 @@ class FormUsuario extends StatelessWidget {
     required this.userController,
     required this.passwordController,
     required this.ageController,
-    required this.selectedTratement,
+    required this.selectedTitle,
     required this.imagenPath,
     required this.isAdmin,
-    required this.onTratementChanged,
+    required this.onTitleChanged,
     required this.onImageChanged,
     required this.onAdminChanged,
   });
@@ -40,11 +40,11 @@ class FormUsuario extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         DropdownButtonFormField<String>(
-          value: selectedTratement,
+          value: selectedTitle,
           items: ["Sr.", "Sra."].map((trato) {
             return DropdownMenuItem(value: trato, child: Text(trato));
           }).toList(),
-          onChanged: onTratementChanged,
+          onChanged: onTitleChanged,
           decoration: const InputDecoration(labelText: "Trato"),
         ),
         TextFormField(

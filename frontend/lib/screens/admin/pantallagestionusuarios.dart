@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:inicio_sesion/logica/userlogic.dart';
-import '../models/user.dart';
-import '../commons/images.dart';
-import '../commons/validations.dart';
-import '../commons/constants.dart';
-import '../widgets/formusuario.dart';
-import '../commons/dialogs.dart';
+import 'package:frontend_flutter/data/models/user.dart';
+import 'package:frontend_flutter/commons/images.dart';
+import 'package:frontend_flutter/commons/validations.dart';
+import 'package:frontend_flutter/commons/constants.dart';
+import 'package:frontend_flutter/providers/usuarioprovider.dart';
+import 'package:frontend_flutter/widgets/formusuario.dart';
+import 'package:frontend_flutter/commons/dialogs.dart';
+import 'package:provider/provider.dart';
 
 class AdministerManagementPage extends StatefulWidget {
   final User currentAdmin;
   const AdministerManagementPage({super.key, required this.currentAdmin});
 
   @override
-  _AdministerManagementPageState createState() =>
-      _AdministerManagementPageState();
+  _AdministerManagementPageState createState() => _AdministerManagementPageState();
 }
 
 class _AdministerManagementPageState extends State<AdministerManagementPage> {
@@ -22,7 +22,7 @@ class _AdministerManagementPageState extends State<AdministerManagementPage> {
     TextEditingController userController = TextEditingController();
     TextEditingController passwordController = TextEditingController();
     TextEditingController ageController = TextEditingController();
-    String selectedTreatment = "Sr.";
+    String selectedTitle = "Sr.";
     String? imagePath;
     bool isAdmin = false;
 
@@ -38,15 +38,12 @@ class _AdministerManagementPageState extends State<AdministerManagementPage> {
                 userController: userController,
                 passwordController: passwordController,
                 ageController: ageController,
-                selectedTratement: selectedTreatment,
+                selectedTitle: selectedTitle,
                 imagenPath: imagePath,
                 isAdmin: isAdmin,
-                onTratementChanged: (value) =>
-                    setDialogState(() => selectedTreatment = value!),
-                onImageChanged: (value) =>
-                    setDialogState(() => imagePath = value),
-                onAdminChanged: (value) =>
-                    setDialogState(() => isAdmin = value!),
+                onTitleChanged: (value) => setDialogState(() => selectedTitle = value!),
+                onImageChanged: (value) => setDialogState(() => imagePath = value),
+                onAdminChanged: (value) => setDialogState(() => isAdmin = value!),
                 onModifiedUser: (user) {},
               ),
             ),
@@ -84,17 +81,19 @@ class _AdministerManagementPageState extends State<AdministerManagementPage> {
                   await Dialogs.showLoadingSpinner(context);
 
                   User newUser = User(
-                    trato: selectedTreatment,
-                    imagen: imagePath ?? Images.getDefaultImage(isAdmin),
-                    edad: int.parse(ageController.text),
+                    id: 0,
+                    trato: selectedTitle, //tengo que tocarlo despues, vamos avanzando-------------------------------------------------------------
                     nombre: userController.text,
-                    pass: passwordController.text,
+                    contrasena: passwordController.text,
+                    contrasena2: passwordController.text,
+                    imagenPath: imagePath ?? Images.getDefaultImage(isAdmin),
+                    edad: int.parse(ageController.text),
                     lugarNacimiento: "Madrid",
                     administrador: isAdmin,
+                    //bloqueado: false,//tengo que tocarlo despues y parece que no hace falta-----------------------------------------------
                   );
-                  Logica.aniadirUser(newUser);
-
-
+                  final usuarioProvider = Provider.of<UsuarioProvider>(context, listen: false);
+                  usuarioProvider.addUsuario(newUser);
                   Navigator.pop(dialogContext);
                   setState(() {});
                   Dialogs.showSnackBar(context, "Usuario creado correctamente",
@@ -115,14 +114,11 @@ class _AdministerManagementPageState extends State<AdministerManagementPage> {
 
   void _editUser(User user) {
 
-    TextEditingController userController =
-        TextEditingController(text: user.nombre);
-    TextEditingController passwordController =
-        TextEditingController(text: user.pass);
-    TextEditingController ageController =
-        TextEditingController(text: user.edad.toString());
-    String selectedTreatment = user.trato;
-    String? imagePath = user.imagen;
+    TextEditingController userController = TextEditingController(text: user.nombre);
+    TextEditingController passwordController = TextEditingController(text: user.contrasena);
+    TextEditingController ageController = TextEditingController(text: user.edad.toString());
+    String selectedTitle = user.trato; 
+    String? imagePath = user.imagenPath;
     bool isAdmin = user.administrador;
 
     showDialog(
@@ -137,15 +133,12 @@ class _AdministerManagementPageState extends State<AdministerManagementPage> {
                 userController: userController,
                 passwordController: passwordController,
                 ageController: ageController,
-                selectedTratement: selectedTreatment,
+                selectedTitle: selectedTitle,
                 imagenPath: imagePath,
                 isAdmin: isAdmin,
-                onTratementChanged: (value) =>
-                    setDialogState(() => selectedTreatment = value!),
-                onImageChanged: (value) =>
-                    setDialogState(() => imagePath = value),
-                onAdminChanged: (value) =>
-                    setDialogState(() => isAdmin = value!),
+                onTitleChanged: (value) => setDialogState(() => selectedTitle = value!),
+                onImageChanged: (value) => setDialogState(() => imagePath = value),
+                onAdminChanged: (value) => setDialogState(() => isAdmin = value!),
                 onModifiedUser: (user) {},
               ),
             ),
@@ -173,13 +166,28 @@ class _AdministerManagementPageState extends State<AdministerManagementPage> {
                   }
 
                   await Dialogs.showLoadingSpinner(context);
+                  /*User usuarioEditado = User(
+                    id: user.id,
+                    trato: selectedTitle,//tengo que editarlo ----------------------------------------------------------------------------- 
+                    nombre: user.nombre,
+                    contrasena: passwordController.text,
+                    contrasena2: passwordController.text,
+                    edad: int.parse(ageController.text),
+                    imagenPath: imagePath ?? '',
+                    lugarNacimiento: user.lugarNacimiento,
+                    administrador: isAdmin
+                  );*/
+                  User usuarioEditado = user.copyWith(
+                    trato: selectedTitle,
+                    contrasena: passwordController.text,
+                    contrasena2: passwordController.text,
+                    edad: int.parse(ageController.text),
+                    imagenPath: imagePath ?? '',
+                    administrador: isAdmin,
+                  );
 
-                  user.trato = selectedTreatment;
-                  user.pass = passwordController.text;
-                  user.edad = int.parse(ageController.text);
-                  user.imagen = imagePath ?? '';
-                  user.administrador = isAdmin;
-                  Logica.updateUser(user);
+                  final usuarioProvider = Provider.of<UsuarioProvider>(context, listen: false);
+                  usuarioProvider.updateUsuario(user.id.toString(), usuarioEditado);
 
                   Navigator.pop(dialogContext);
                   setState(() {});
@@ -197,64 +205,63 @@ class _AdministerManagementPageState extends State<AdministerManagementPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-
-      List<User> listUsers = Logica.listaRegistro
-        .where((u) => u.nombre != "admin"&& u.nombre != widget.currentAdmin.nombre)
-        .toList();
+  Widget build(BuildContext context)  {
+    final usuarioProvider = Provider.of<UsuarioProvider>(context);
+    
+      //.where((u) => u.nombre != "admin"&& u.nombre != widget.currentAdmin.nombre)
+      //.toList();
 
     return Scaffold(
       appBar: AppBar(
-      title: const Text("Gestión de Usuarios"),
-      leading: IconButton(
-        onPressed: () => Navigator.pop(context),
-        icon: const Icon(Icons.arrow_back),
-      ),
+        title: const Text("Gestión de Usuarios"),
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(Icons.arrow_back),
+        ),
       ),
       body: ListView.builder(
       padding: const EdgeInsets.only(bottom: 80),
-      itemCount: listUsers.length,
+      itemCount: usuarioProvider.usuarios.length,
       itemBuilder: (context, index) {
-        User user = listUsers[index];
           return Card(
             margin: const EdgeInsets.all(8),
             child: ListTile(
               leading: CircleAvatar(
-                backgroundImage: Images.getImageProvider(user.imagen),
+                backgroundImage: Images.getImageProvider(usuarioProvider.usuarios[index].getImagePath()),
                 backgroundColor: Colors.grey[200],
               ),
               title: Row(
                 children: [
-                  Text(user.nombre),
-                  if (user.administrador) const SizedBox(width: 4),
-                  if (user.administrador) Constants.adminBadge,
+                  Text(usuarioProvider.usuarios[index].nombre),
+                  if (usuarioProvider.usuarios[index].administrador) const SizedBox(width: 4),
+                  if (usuarioProvider.usuarios[index].administrador) Constants.adminBadge,
                 ],
               ),
               subtitle: Text(
-                  "${user.trato} - ${user.edad} años - ${user.lugarNacimiento}"),
+                "${usuarioProvider.usuarios[index].trato}-${usuarioProvider.usuarios[index].edad} años - ${usuarioProvider.usuarios[index].lugarNacimiento}"
+              ),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   IconButton(
                     icon: const Icon(Icons.edit, color: Colors.blue),
-                    onPressed: () => _editUser(user),
+                    onPressed: () => _editUser(usuarioProvider.usuarios[index]),
                   ),
-                  IconButton(
+                  IconButton(//---------------------------------------------------------------------------------------------------------------------------------------
                     icon: Icon(
-                      user.bloqueado ? Icons.lock : Icons.lock_open,
-                      color: user.bloqueado ? Colors.red : Colors.green,
+                      usuarioProvider.usuarios[index].bloqueado ? Icons.lock : Icons.lock_open,
+                      color: usuarioProvider.usuarios[index].bloqueado ? Colors.red : Colors.green,
                     ),
-                    onPressed: () {
-                      setState(() {
-                        user.bloqueado = !user.bloqueado;
-                        Logica.updateUser(user);
-                      });
+                    onPressed: () async {
+                      User usuarioActual = usuarioProvider.usuarios[index];
+                      User usuarioActualizado = usuarioActual.copyWith(bloqueado: !usuarioActual.bloqueado);
+                      await usuarioProvider.updateUsuario(usuarioActual.id.toString(), usuarioActualizado);
                       Dialogs.showSnackBar(
                           context,
-                          user.bloqueado
+                          usuarioProvider.usuarios[index].bloqueado
                               ? "Usuario bloqueado"
                               : "Usuario desbloqueado",
-                          color: user.bloqueado
+                          color: usuarioProvider.usuarios[index].bloqueado
                               ? Constants.errorColor
                               : Constants.successColor);
                     },
@@ -266,12 +273,12 @@ class _AdministerManagementPageState extends State<AdministerManagementPage> {
                           context: context,
                           title: "Confirmar eliminación",
                           content:
-                              "¿Está seguro de eliminar a ${user.nombre}?", 
+                              "¿Está seguro de eliminar a ${usuarioProvider.usuarios[index].nombre}?", 
                               style: Text(''));
 
                       if (confirm == true) {
                         await Dialogs.showLoadingSpinner(context);
-                              Logica.deleteUser(user.nombre);
+                        usuarioProvider.deleteUsuario(usuarioProvider.usuarios[index].id);
                         setState(() {});
                         Dialogs.showSnackBar(
                             context, "Usuario eliminado correctamente",

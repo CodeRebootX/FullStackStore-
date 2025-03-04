@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../widgets/orderlist.dart';
-import '../models/user.dart';
-import '../models/order.dart';
-import '../logica/orderlogic.dart';
+import '../../widgets/orderlist.dart';
+import '../../data/models/user.dart';
+import '../../data/models/order.dart';
+import '../../data/repositories/orderlogic.dart';
 
 
 class OrdersPage extends StatelessWidget {

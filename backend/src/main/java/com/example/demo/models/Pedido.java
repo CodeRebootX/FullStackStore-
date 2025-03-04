@@ -8,11 +8,11 @@ public class Pedido {
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="descripcion")
-    private String descripcion;
+    /*@Column(name="descripcion")
+    private String descripcion;*/
 
-    @Column(name="precio")
-    private double precio;
+    @Column(name="total")
+    private double total;
 
     @Column(name="estado")
     private String estado;
@@ -31,20 +31,20 @@ public class Pedido {
         this.id = id;
     }
 
-    public String getDescripcion() {
+    /*public String getDescripcion() {
         return descripcion;
     }
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }*/
+
+    public double getTotal() {
+        return total;
     }
 
-    public double getPrecio() {
-        return precio;
-    }
-
-    public void setPrecio(double precio) {
-        this.precio = precio;
+    public void setTotal(double precio) {
+        this.total = precio;
     }
 
     public String getEstado() {
@@ -68,9 +68,9 @@ public class Pedido {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((descripcion == null) ? 0 : descripcion.hashCode());
+        //result = prime * result + ((descripcion == null) ? 0 : descripcion.hashCode());
         long temp;
-        temp = Double.doubleToLongBits(precio);
+        temp = Double.doubleToLongBits(total);
         result = prime * result + (int) (temp ^ (temp >>> 32));
         result = prime * result + ((estado == null) ? 0 : estado.hashCode());
         result = prime * result + ((comprador == null) ? 0 : comprador.hashCode());
@@ -91,12 +91,12 @@ public class Pedido {
                 return false;
         } else if (!id.equals(other.id))
             return false;
-        if (descripcion == null) {
+        /*if (descripcion == null) {
             if (other.descripcion != null)
                 return false;
         } else if (!descripcion.equals(other.descripcion))
-            return false;
-        if (Double.doubleToLongBits(precio) != Double.doubleToLongBits(other.precio))
+            return false;*/
+        if (Double.doubleToLongBits(total) != Double.doubleToLongBits(other.total))
             return false;
         if (estado == null) {
             if (other.estado != null)

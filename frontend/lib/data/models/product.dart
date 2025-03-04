@@ -1,8 +1,8 @@
 class Product {
-  String id;
+  int id;
   String nombre;
   String descripcion;
-  String imagen;
+  String imagenPath;
   int stock;
   double precio;
 
@@ -10,7 +10,7 @@ class Product {
     required this.id,
     required this.nombre,
     required this.descripcion,
-    required this.imagen,
+    required this.imagenPath,
     required this.stock,
     required this.precio,
   });

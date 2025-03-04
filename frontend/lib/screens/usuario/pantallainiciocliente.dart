@@ -1,13 +1,13 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:inicio_sesion/screens/pantallacompras.dart';
-import 'package:inicio_sesion/screens/pantallapedidos.dart';
-import 'package:inicio_sesion/screens/pantallayo.dart';
-import 'package:inicio_sesion/widgets/drawer.dart';
-import '../screens/pantallaprincipal.dart';
-import '../models/user.dart';
-import '../widgets/bottomnavigationbar.dart';
-import '../screens/pantallaperfil.dart';
+import 'package:frontend_flutter/screens/usuario/pantallacompras.dart';
+import 'package:frontend_flutter/screens/usuario/pantallapedidos.dart';
+import 'package:frontend_flutter/screens/usuario/pantallayo.dart';
+import 'package:frontend_flutter/widgets/drawer.dart';
+import '../login/pantallaprincipal.dart';
+import '../../data/models/user.dart';
+import '../../widgets/bottomnavigationbar.dart';
+import 'pantallaperfil.dart';
 
 
 class MyStartedPage extends StatefulWidget {

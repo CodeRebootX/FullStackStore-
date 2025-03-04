@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:inicio_sesion/commons/constants.dart';
-import 'package:inicio_sesion/commons/custombutton.dart';
-import 'package:inicio_sesion/screens/pantallaadministrador.dart';
-import 'package:inicio_sesion/screens/pantallaregistro.dart';
-import 'package:inicio_sesion/logica/userlogic.dart';
-import 'package:inicio_sesion/screens/pantallainiciocliente.dart';
-import '../models/user.dart';
-import '../commons/snacksbar.dart';
+import 'package:frontend_flutter/providers/usuarioprovider.dart';
+import 'package:frontend_flutter/commons/constants.dart';
+import 'package:frontend_flutter/commons/custombutton.dart';
+//import 'package:frontend_flutter/providers/usuarioprovider.dart';
+import 'package:frontend_flutter/screens/admin/pantallaadministrador.dart';
+import 'package:frontend_flutter/screens/login/pantallaregistro.dart';
+import 'package:frontend_flutter/screens/usuario/pantallainiciocliente.dart';
+import 'package:frontend_flutter/data/models/user.dart';
+import 'package:frontend_flutter/commons/snacksbar.dart';
 import 'package:logger/logger.dart';
+import 'package:provider/provider.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -23,10 +25,59 @@ class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController userController = TextEditingController();
   final TextEditingController passController = TextEditingController();
   bool obscureText = true;
+  String _nombre = '';
+  String _contrasena = '';
   User? user;
   int selectedIndex = 0;
   late final List<Widget> pages;
   var logger = Logger();
+
+  Future<void> _pantallaInicio() async {
+    final usuarioProvider = Provider.of<UsuarioProvider>(context, listen: false);
+    List<User> listaUsuarios = await usuarioProvider.fetchListaUsuarios();
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+    }
+
+    for (User miUsuario in listaUsuarios) {
+      if (miUsuario.getNombre() == _nombre && miUsuario.getPass() == _contrasena) {
+        if (miUsuario.getBloqueado()) {
+          SnaksBar.showSnackBar(
+            context, "Usuario bloqueado, por favor contacta con el administrador", color: Constants.errorColor
+          );
+          return;
+        }
+        
+        if (miUsuario.getAdministrador() == false) {
+          Navigator.push(
+            context, MaterialPageRoute(
+              builder: (context) => MyStartedPage(user: miUsuario)
+            ),
+          );
+          break;
+        } else {
+          Navigator.push(
+            context, MaterialPageRoute(
+              builder: (context) => MyAdminPage(usuarioAdmin: miUsuario)
+            ),
+          );
+        }
+      }
+    }
+
+    if (_nombre == 'admin' && _contrasena == 'admin') {
+      user = User.empty();
+      Navigator.push(
+        context, MaterialPageRoute(
+          builder: (context) => MyAdminPage(usuarioAdmin: user!)
+        ),
+      );
+    } else {
+      SnaksBar.showSnackBar(
+        context, 'Usuario o Contraseña incorrecta', color: Constants.errorColor
+      );
+    }
+  }
 
   void openRegister() {
     Navigator.push(context,
@@ -53,7 +104,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void startSession() {
+  /*void startSession() {
     if (_formKey.currentState!.validate()) {
       String usuario = userController.text;
       String contrasena = passController.text;
@@ -81,9 +132,11 @@ class _MyHomePageState extends State<MyHomePage> {
         }
       }
     }
-  }
+  }*/
 
-  void olvidasteContrasena() {
+
+  void olvidasteContrasena(BuildContext context) {
+    final usuarioProvider = Provider.of<UsuarioProvider>(context, listen: false);
     TextEditingController nombreUsuarioController = TextEditingController();
 
     showDialog(
@@ -101,17 +154,21 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           ElevatedButton(
             onPressed: () {
+              Navigator.of(context).pop();
               String nombre = nombreUsuarioController.text;
-              User? user = Logica.findUser(nombre);
-              String mensaje = (user != null)
-                  ? "La contraseña es: ${user.pass}"
-                  : "Usuario no encontrado";
-
-              Navigator.pop(context);
-              SnaksBar.showSnackBar(context, mensaje,
-                  color: user != null
-                      ? Constants.successColor
-                      : Constants.errorColor);
+              for (User miUsuario in usuarioProvider.usuarios) {
+                if (miUsuario.getNombre() == nombre) {
+                  String contrasenaUser = miUsuario.getPass();
+                  SnaksBar.showSnackBar(
+                    context, "La contrasena es: $contrasenaUser", color: Constants.successColor
+                  );
+                  break; 
+                } else {
+                  SnaksBar.showSnackBar(
+                    context, "Usuario no encontrado", color: Constants.errorColor
+                  );
+                }
+              }
             },
             style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.white,
@@ -159,6 +216,9 @@ class _MyHomePageState extends State<MyHomePage> {
                       border: OutlineInputBorder(),
                       errorStyle: TextStyle(fontSize: 10),
                     ),
+                    onSaved: (nombre) {
+                      _nombre = nombre!;
+                    },
                     validator: (value) =>
                         value!.isEmpty ? 'Enter your username' : null,
                     onTap: () {
@@ -192,6 +252,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         },
                       ),
                     ),
+                    onSaved: (contrasena) {
+                      _contrasena = contrasena!;
+                    },
                     validator: (value) =>
                         value!.isEmpty ? 'Enter your password' : null,
                     onTap: () {
@@ -205,7 +268,8 @@ class _MyHomePageState extends State<MyHomePage> {
               Padding(
                   padding: const EdgeInsets.all(15),
                   child:
-                      CustomEButton(text: 'Iniciar', myFunction: startSession)),
+                      CustomEButton(text: 'Iniciar', myFunction: _pantallaInicio)
+                ),
               Padding(
                 padding: const EdgeInsets.all(15),
                 child: CustomEButton(
@@ -214,7 +278,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               TextButton(
-                  onPressed: olvidasteContrasena,
+                  onPressed:() {
+                     olvidasteContrasena(context);
+                  },
                   style: TextButton.styleFrom(
                     foregroundColor: const Color.fromARGB(255, 33, 150, 243),
                   ),

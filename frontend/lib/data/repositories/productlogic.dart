@@ -3,26 +3,26 @@ import '../models/product.dart';
 class ProductLogic {
   static final List<Product> productos = [
     Product(
-      id: "p1",
+      id: 1,
       nombre: "Caldera Vaillant",
       descripcion: "Aire acondicionado elegante y eficiente con tecnología avanzada de control y purificación del aire.",
-      imagen: "assets/images/caldera_vaillant.png",
+      imagenPath: "assets/images/caldera_vaillant.png",
       stock: 10,
       precio: 850.0,
     ),
     Product(
-      id: "p2",
+      id: 2,
       nombre: "Aire Acondicionado Mitsubishi",
       descripcion: "Split premium con alta eficiencia energética, filtrado avanzado y control inteligente.",
-      imagen: "assets/images/mitsubishi_aire.png",
+      imagenPath: "assets/images/mitsubishi_aire.png",
       stock: 5,
       precio: 1500.0,
     ),
     Product(
-      id: "p3",
+      id: 3,
       nombre: "Aire Acondicionado Daikin",
       descripcion: "Aire acondicionado elegante y eficiente con tecnología avanzada de control y purificación del aire.",
-      imagen: "assets/images/daikin_aire.png",
+      imagenPath: "assets/images/daikin_aire.png",
       stock: 8,
       precio: 975.0,
     ),
@@ -39,7 +39,7 @@ class ProductLogic {
     }
   }
 
-  static void deleteProduct(String id) {
+  static void deleteProduct(int id) {
     productos.removeWhere((p) => p.id == id);
   }
 }

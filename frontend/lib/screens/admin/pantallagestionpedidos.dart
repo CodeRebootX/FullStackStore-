@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:inicio_sesion/logica/orderlogic.dart';
-import 'package:inicio_sesion/widgets/orderlist.dart';
-import 'package:inicio_sesion/models/order.dart';
-import 'package:inicio_sesion/commons/dialogs.dart';
-import 'package:inicio_sesion/commons/constants.dart';
+import 'package:frontend_flutter/data/repositories/orderlogic.dart';
+import 'package:frontend_flutter/widgets/orderlist.dart';
+import 'package:frontend_flutter/data/models/order.dart';
+import 'package:frontend_flutter/commons/dialogs.dart';
+import 'package:frontend_flutter/commons/constants.dart';
 
 class MyOrdersPage extends StatefulWidget {
   const MyOrdersPage({super.key});

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:inicio_sesion/models/user.dart';
-import 'package:inicio_sesion/logica/userlogic.dart';
+import 'package:frontend_flutter/data/models/user.dart';
+//import 'package:frontend_flutter/data/repositories/usuariorepository.dart';
+import 'package:frontend_flutter/providers/usuarioprovider.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:numberpicker/numberpicker.dart';
+import 'package:provider/provider.dart';
 
 class EditionUserPage extends StatefulWidget {
   final User usuario;
@@ -30,11 +32,11 @@ class _EditionUserPageState extends State<EditionUserPage> {
     birthplace = widget.usuario.lugarNacimiento;
     _selectedAge= widget.usuario.edad;
     _userController= TextEditingController(text:widget.usuario.nombre);
-    _passwordController= TextEditingController(text: widget.usuario.pass);
-    _confirmPasswordController = TextEditingController(text: widget.usuario.pass);
-    _selectedTitle= widget.usuario.trato;
-    if (widget.usuario.imagen.isNotEmpty){
-      _image = File(widget.usuario.imagen);
+    _passwordController= TextEditingController(text: widget.usuario.contrasena);
+    _confirmPasswordController = TextEditingController(text: widget.usuario.contrasena2);
+    _selectedTitle = widget.usuario.trato;
+    if (widget.usuario.imagenPath.isNotEmpty){
+      _image = File(widget.usuario.imagenPath);
     }
       
 
@@ -52,15 +54,17 @@ class _EditionUserPageState extends State<EditionUserPage> {
   void _updateUser(User user) {
   if (_formKey.currentState!.validate()) {
     User updatedUser = User(
+      id: user.id,
+      trato: _selectedTitle, //Tengo que editarlo despues, vamos viendo-------------------------------------------------------------------
       nombre: user.nombre,
-      pass: _passwordController.text.isEmpty ? user.pass : _passwordController.text,
-      trato: _selectedTitle,        
-      edad: _selectedAge,      
-      imagen: _image?.path ?? user.imagen, 
+      contrasena: _passwordController.text.isEmpty ? user.contrasena : _passwordController.text,
+      contrasena2: _confirmPasswordController.text.isEmpty ? user.contrasena2 : _confirmPasswordController.text,           
+      imagenPath: _image?.path ?? user.imagenPath,
+      edad: _selectedAge, 
       lugarNacimiento: birthplace,
     );
-    
-    Logica.updateUser(updatedUser);
+    final usuarioProvider = Provider.of<UsuarioProvider>(context, listen: false);
+    usuarioProvider.updateUsuario(user.id.toString(), updatedUser);
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Datos actualizados')),

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:inicio_sesion/commons/priceformat.dart';
-import 'package:inicio_sesion/logica/orderlogic.dart';
-import '../models/user.dart';
-import '../models/product.dart';
-import '../logica/productlogic.dart';
-import '../commons/snacksbar.dart';
-import '../commons/constants.dart';
-import '../models/order.dart';
-import '../widgets/productlist.dart';
+import 'package:frontend_flutter/commons/priceformat.dart';
+import 'package:frontend_flutter/data/repositories/orderlogic.dart';
+import 'package:frontend_flutter/data/models/user.dart';
+import 'package:frontend_flutter/data/models/product.dart';
+import 'package:frontend_flutter/data/repositories/productlogic.dart';
+import 'package:frontend_flutter/commons/snacksbar.dart';
+import 'package:frontend_flutter/commons/constants.dart';
+import 'package:frontend_flutter/data/models/order.dart';
+import 'package:frontend_flutter/widgets/productlist.dart';
 
 
 class ShoppingPage extends StatefulWidget {
@@ -19,7 +19,7 @@ class ShoppingPage extends StatefulWidget {
 }
 
 class _ShoppingPageState extends State<ShoppingPage> {
-  Map<String, int> cantidades = {};
+  Map<int, int> cantidades = {};
 
   double calcularTotal() {
     double total = 0;
@@ -139,8 +139,8 @@ class _ShoppingPageState extends State<ShoppingPage> {
 
   void confirmarCompra() async {
 
-    String pedidoId = "OR${DateTime.now()}";
-    Map<String, int> productosComprados = {};
+    int pedidoId = 00000000000;
+    Map<int, int> productosComprados = {};
 
     for (var producto in ProductLogic.productos) {
       int cantidad = cantidades[producto.id] ?? 0;
@@ -160,7 +160,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
 
     Order pedido = Order(
       id: pedidoId,
-      usuario: widget.usuario.nombre,
+      comprador: widget.usuario.nombre,
       productos: productosComprados,
       total: calcularTotal(),
       estado: "Pedido",

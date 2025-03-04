@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:inicio_sesion/logica/productlogic.dart';
-import 'package:inicio_sesion/models/product.dart';
-import 'package:inicio_sesion/commons/producto.dart';
-import 'package:inicio_sesion/commons/validations.dart';
-import 'package:inicio_sesion/commons/dialogs.dart';
-import 'package:inicio_sesion/commons/images.dart';
-import 'package:inicio_sesion/commons/constants.dart';
+import 'package:frontend_flutter/data/repositories/productlogic.dart';
+import 'package:frontend_flutter/data/models/product.dart';
+import 'package:frontend_flutter/commons/producto.dart';
+import 'package:frontend_flutter/commons/validations.dart';
+import 'package:frontend_flutter/commons/dialogs.dart';
+import 'package:frontend_flutter/commons/images.dart';
+import 'package:frontend_flutter/commons/constants.dart';
 import 'dart:math' show Random;
 
 class MyProductPage extends StatefulWidget {
@@ -96,7 +96,7 @@ class _MyProductPageState extends State<MyProductPage> {
 
                   await Dialogs.showLoadingSpinner(context);
 
-                  String nuevoId = 'PROD${Random().nextInt(10000)}';
+                  int nuevoId = Random().nextInt(10000);
                   Product nuevoProducto = Product(
                     id: nuevoId,
                     nombre: nameController.text,
@@ -104,7 +104,7 @@ class _MyProductPageState extends State<MyProductPage> {
                     precio:
                         double.parse(priceController.text.replaceAll(',', '.')),
                     stock: int.parse(stockController.text),
-                    imagen: PathImage ?? Images.getDefaultImage(false),
+                    imagenPath: PathImage ?? Images.getDefaultImage(false),
                   );
 
                   ProductLogic.addProduct(nuevoProducto);
@@ -135,7 +135,7 @@ class _MyProductPageState extends State<MyProductPage> {
         TextEditingController(text: Pproduct.precio.toString());
     TextEditingController stockController =
         TextEditingController(text: Pproduct.stock.toString());
-    String? imagenPath = Pproduct.imagen;
+    String? imagenPath = Pproduct.imagenPath;
 
     showDialog(
       context: context,
@@ -216,7 +216,7 @@ class _MyProductPageState extends State<MyProductPage> {
                   Pproduct.precio =
                       double.parse(precioController.text.replaceAll(',', '.'));
                   Pproduct.stock = int.parse(stockController.text);
-                  Pproduct.imagen = imagenPath ?? Images.getDefaultImage(false);
+                  Pproduct.imagenPath = imagenPath ?? Images.getDefaultImage(false);
                   ProductLogic.updateProduct(Pproduct);
 
                   Navigator.pop(dialogContext);

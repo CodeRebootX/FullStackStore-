@@ -1,13 +1,13 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:inicio_sesion/commons/custombutton.dart';
-import 'package:inicio_sesion/screens/pantallagestionpedidos.dart';
-import 'package:inicio_sesion/screens/pantallagestionproductos.dart';
-import 'package:inicio_sesion/screens/pantallagestionusuarios.dart';
-import 'package:inicio_sesion/screens/pantallaperfil.dart';
-import 'package:inicio_sesion/screens/pantallaprincipal.dart';
-import 'package:inicio_sesion/widgets/drawer.dart';
-import '../models/user.dart';
+import 'package:frontend_flutter/commons/custombutton.dart';
+import 'package:frontend_flutter/screens/admin/pantallagestionpedidos.dart';
+import 'package:frontend_flutter/screens/admin/pantallagestionproductos.dart';
+import 'package:frontend_flutter/screens/admin/pantallagestionusuarios.dart';
+import 'package:frontend_flutter/screens/usuario/pantallaperfil.dart';
+import 'package:frontend_flutter/screens/login/pantallaprincipal.dart';
+import 'package:frontend_flutter/widgets/drawer.dart';
+import '../../data/models/user.dart';
 
 class MyAdminPage extends StatefulWidget {
   final User usuarioAdmin;

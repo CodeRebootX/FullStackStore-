@@ -21,8 +21,8 @@ public class PedidoService {
 
     public Pedido mapToPedido (PedidoCreationRequest pedidoCreationRequest) {
         Pedido pedido = new Pedido();
-        pedido.setDescripcion(pedidoCreationRequest.descripcion());
-        pedido.setPrecio(pedidoCreationRequest.precio());
+        //pedido.setDescripcion(pedidoCreationRequest.descripcion());
+        pedido.setTotal(pedidoCreationRequest.total());
         pedido.setEstado(pedidoCreationRequest.estado());
         pedido.setComprador(pedidoCreationRequest.comprador());
 

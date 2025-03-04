@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import '../models/product.dart';
+import '../data/models/product.dart';
 import '../commons/priceformat.dart';
 
 class CustomProducto extends StatelessWidget {
@@ -23,9 +23,9 @@ class CustomProducto extends StatelessWidget {
         leading: SizedBox(
           width: 50,
           height: 50,
-          child: product.imagen.startsWith('assets')
-              ? Image.asset(product.imagen, fit: BoxFit.cover)
-              : Image.file(File(product.imagen), fit: BoxFit.cover),
+          child: product.imagenPath.startsWith('assets')
+              ? Image.asset(product.imagenPath, fit: BoxFit.cover)
+              : Image.file(File(product.imagenPath), fit: BoxFit.cover),
         ),
         title: Text(product.nombre),
         subtitle: Column(

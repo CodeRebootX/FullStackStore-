@@ -28,13 +28,38 @@ public class UserService {
         return userRepository.save(mapToUser(userCreationRequest));
     }
 
+    /*public User updateUser(UserCreationRequest userCreationRequest) {
+        return userRepository.save(mapToUser(userCreationRequest));
+    }*/
+
+    public User updateUser(Long userId, UserCreationRequest userCreationRequest) {
+        return userRepository.findById(userId)
+            .map(existingUser -> {
+                existingUser.setTrato(userCreationRequest.trato());
+                existingUser.setNombre(userCreationRequest.nombre());
+                existingUser.setContrasena(userCreationRequest.contrasena());
+                existingUser.setEdad(userCreationRequest.edad());
+                existingUser.setImagenPath(userCreationRequest.imagen());
+                existingUser.setLugarNacimiento(userCreationRequest.lugarNacimiento());
+                existingUser.setAdministrador(userCreationRequest.administrador());
+                existingUser.setBloqueado(userCreationRequest.bloqueado());
+    
+                return userRepository.save(existingUser);
+            })
+            .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + userId));
+    }
+
 
     public User mapToUser (UserCreationRequest userCreationRequest){
         User user = new User();
+        user.setTrato(userCreationRequest.trato());
         user.setNombre(userCreationRequest.nombre());
         user.setContrasena(userCreationRequest.contrasena());
         user.setEdad(userCreationRequest.edad());
+        user.setImagenPath(userCreationRequest.imagen());
+        user.setLugarNacimiento(userCreationRequest.lugarNacimiento());
         user.setAdministrador(userCreationRequest.administrador());
+        user.setBloqueado(userCreationRequest.bloqueado());
 
         return user;
     }

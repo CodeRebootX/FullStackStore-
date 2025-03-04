@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../commons/constants.dart';
 
 class DrawerPrincipal extends StatelessWidget {
   final VoidCallback onPantallaPrincipal;

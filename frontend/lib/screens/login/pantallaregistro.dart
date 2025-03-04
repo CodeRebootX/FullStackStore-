@@ -1,12 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:inicio_sesion/models/user.dart';
-import 'package:inicio_sesion/logica/userlogic.dart';
+import 'package:frontend_flutter/data/models/user.dart';
+//import 'package:frontend_flutter/data/repositories/usuariorepository.dart';
+import 'package:frontend_flutter/providers/usuarioprovider.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:numberpicker/numberpicker.dart';
-import '../commons/snacksbar.dart';
-import '../commons/constants.dart';
+import 'package:frontend_flutter/commons/snacksbar.dart';
+import 'package:frontend_flutter/commons/constants.dart';
+import 'package:provider/provider.dart';
 
 class MyRegisterPage extends StatefulWidget {
   const MyRegisterPage({super.key});
@@ -41,29 +43,37 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
 
   void _registerUser() {
     if (_formKey.currentState!.validate() && _acceptTerms) {
-      Logica.aniadirUser(User(
-          nombre: _userController.text,
-          pass: _passwordController.text,
-          trato: _selectedTitle,
-          edad: _selectedAge,
-          imagen: _image?.path ?? '',
-          bloqueado: false,
-          lugarNacimiento: _birthplaceController.text));
+      User usuario = User(
+        id: 0,
+        trato: 'Sr.', //tengo que editarlo despues
+        nombre: _userController.text,
+        contrasena: _passwordController.text,
+        contrasena2: _confirmPasswordController.text,
+        imagenPath: _image?.path?? '',
+        edad: _selectedAge,
+        lugarNacimiento: _birthplaceController.text,
+        administrador: false,
+        bloqueado: false,
+      );
+      final usuarioProvider = Provider.of<UsuarioProvider>(context, listen: false);
+      usuarioProvider.addUsuario(usuario);
       SnaksBar.showSnackBar(context, "Usuario registrado exitosamente",
             color: Constants.successColor);
       Navigator.pop(context);
     } else if (_formKey.currentState!.validate() && !_acceptTerms) {
       showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-                title: Text(''),
-                content: Text('Debes aceptar los términos y condiciones'),
-                actions: [
-                  TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: Text('Volver')),
-                ],
-              ));
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text(''),
+              content: Text('Debes aceptar los términos y condiciones'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text('Volver')
+                ),
+              ],
+            )
+          );
     }
   }
 

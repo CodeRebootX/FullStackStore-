@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:inicio_sesion/models/user.dart';
+import 'package:frontend_flutter/data/models/user.dart';
 
 class ProfilePage extends StatelessWidget {
   final User usuarioActual; // Usuario conectado
@@ -10,7 +10,7 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("Ruta de la imagen: ${usuarioActual.imagen}");
+    print("Ruta de la imagen: ${usuarioActual.imagenPath}");
 
     return Scaffold(
       appBar: AppBar(
@@ -33,10 +33,10 @@ class ProfilePage extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: 50,
-                    backgroundImage: usuarioActual.imagen.isNotEmpty
-                        ? (usuarioActual.imagen.startsWith("blob:")
-                            ? NetworkImage(usuarioActual.imagen)
-                            : FileImage(File(usuarioActual.imagen))
+                    backgroundImage: usuarioActual.imagenPath.isNotEmpty
+                        ? (usuarioActual.imagenPath.startsWith("blob:")
+                            ? NetworkImage(usuarioActual.imagenPath)
+                            : FileImage(File(usuarioActual.imagenPath))
                         ) as ImageProvider
                       : AssetImage('assets/images/profile_default.jpg'),
                   ),
@@ -44,10 +44,6 @@ class ProfilePage extends StatelessWidget {
                   Text(
                     usuarioActual.nombre,
                     style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
-                  ),
-                  Text(
-                    usuarioActual.trato,
-                    style: TextStyle(fontSize: 16, color: Colors.white70),
                   ),
                 ],
               ),
@@ -69,11 +65,6 @@ class ProfilePage extends StatelessWidget {
                           usuarioActual.administrador ? Icons.security : Icons.person_outline,
                           "Rol",
                           usuarioActual.administrador ? "Administrador" : "Usuario",
-                        ),
-                        _buildProfileTile(
-                          usuarioActual.bloqueado ? Icons.block : Icons.check_circle,
-                          "Estado",
-                          usuarioActual.bloqueado ? "Bloqueado" : "Activo",
                         ),
                       ],
                     ),

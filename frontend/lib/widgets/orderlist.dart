@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../models/order.dart';
-import '../models/product.dart';
-import '../logica/productlogic.dart';
+import '../data/models/order.dart';
+import '../data/models/product.dart';
+import '../data/repositories/productlogic.dart';
 import '../commons/images.dart';
 import '../commons/constants.dart';
 import '../commons/priceformat.dart';
@@ -30,7 +30,7 @@ class OrderListItem extends StatelessWidget {
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             Text(
-              "Usuario: ${pedido.usuario}",
+              "Usuario: ${pedido.comprador}",
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
             ),
             const SizedBox(height: 8),
@@ -70,7 +70,7 @@ class OrderListItem extends StatelessWidget {
             width: 60,
             height: 60,
             child: Image(
-              image: Images.getImageProvider(producto.imagen),
+              image: Images.getImageProvider(producto.imagenPath),
               fit: BoxFit.cover,
             ),
           ),
