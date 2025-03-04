@@ -69,47 +69,19 @@ class User {
 
   @override
   String toString() {
-    return 'User(nombre: $nombre, edad: $edad, imagen: $imagenPath, lugarNacimiento: $lugarNacimiento)';
+    return 'User(id: $id, trato: $trato, nombre: $nombre, edad: $edad, imagen: $imagenPath, lugarNacimiento: $lugarNacimiento, administrador: $administrador, bloqueado: $bloqueado)';
   }
 
-  int getId(){
-    return id;
-  }
-
-  String getTrato() {
-    return trato;
-  }
-
-  String getNombre() {
-    return nombre;
-  }
-
-  String getPass() {
-    return contrasena;
-  }
-
-  String getImagePath() {
-    return imagenPath;
-  }
-
-  int getEdad() {
-    return edad;
-  }
-
-  String getLugarNacimiento() {
-    return lugarNacimiento;
-  }
-
-  bool getAdministrador() {
-    return administrador;
-  }
-
-  bool getBloqueado() {
-    return bloqueado;
-  }
-
-
-
+  int getId() => id;
+  String getTrato() =>trato;
+  String getNombre() => nombre;
+  String getPass() => contrasena;
+  String getImagePath() => imagenPath;
+  int getEdad() => edad;
+  String getLugarNacimiento() => lugarNacimiento;
+  bool getAdministrador() => administrador;
+  bool getBloqueado() => bloqueado;
+  
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       id: json['id'] ?? 0,

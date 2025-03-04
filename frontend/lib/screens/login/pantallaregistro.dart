@@ -20,11 +20,11 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _userController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
-  final TextEditingController _birthplaceController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
+  //final TextEditingController _birthplaceController = TextEditingController();
   int _selectedAge = 20;
   String _selectedTitle = 'Sr.';
+  String _selectedBirthplace = 'Zaragoza';
   File? _image;
   bool _acceptTerms = false;
   final ImagePicker _picker = ImagePicker();
@@ -45,13 +45,13 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
     if (_formKey.currentState!.validate() && _acceptTerms) {
       User usuario = User(
         id: 0,
-        trato: 'Sr.', //tengo que editarlo despues
+        trato: _selectedTitle, 
         nombre: _userController.text,
         contrasena: _passwordController.text,
         contrasena2: _confirmPasswordController.text,
         imagenPath: _image?.path?? '',
         edad: _selectedAge,
-        lugarNacimiento: _birthplaceController.text,
+        lugarNacimiento: _selectedBirthplace,
         administrador: false,
         bloqueado: false,
       );
@@ -147,12 +147,10 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
               ),
               SizedBox(height: 10),
               DropdownButtonFormField<String>(
-                value: 'Zaragoza',
+                value: _selectedBirthplace,
                 decoration: InputDecoration(labelText: 'Lugar de Nacimiento'),
                 items: [
-                  'A Coruña',
-                  'Albacete',
-                  'Alicante',
+                  'A Coruña', 'Albacete', 'Alicante',
                   'Almería',
                   'Ávila',
                   'Badajoz',
@@ -202,7 +200,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
                   return DropdownMenuItem(value: city, child: Text(city));
                 }).toList(),
                 onChanged: (value) =>
-                    setState(() => _birthplaceController.text = value!),
+                    setState(() => _selectedBirthplace = value!),
               ),
               SizedBox(height: 10),
               Text(

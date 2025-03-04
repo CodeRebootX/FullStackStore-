@@ -12,6 +12,7 @@ import com.example.demo.services.ProductService;
 @RequestMapping("/api/v1/products")
 @CrossOrigin(origins = "*")
 public class ProductController {
+
     private final ProductService productService;
 
     public ProductController(ProductService productService) {
@@ -21,6 +22,11 @@ public class ProductController {
     @PostMapping
     public Product createProduct(@RequestBody ProductCreationRequest productCreationRequest) {
         return productService.createProduct(productCreationRequest);
+    }
+
+    @PutMapping("/{id}")
+    public Product updateProduct(@PathVariable Long id, @RequestBody ProductCreationRequest productCreationRequest) {
+        return productService.updateProduct(id, productCreationRequest);
     }
 
 

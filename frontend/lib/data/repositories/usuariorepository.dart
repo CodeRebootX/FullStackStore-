@@ -1,7 +1,7 @@
 import 'package:frontend_flutter/data/models/user.dart';
 import 'package:frontend_flutter/data/services/apiservice.dart';
 
-class Usuariorepository {
+class UsuarioRepository {
   final ApiService _apiService = ApiService();
 
   Future<List<User>> getListaUsuarios() async {

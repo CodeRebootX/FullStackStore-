@@ -259,11 +259,11 @@ class _AdministerManagementPageState extends State<AdministerManagementPage> {
                       Dialogs.showSnackBar(
                           context,
                           usuarioProvider.usuarios[index].bloqueado
-                              ? "Usuario bloqueado"
-                              : "Usuario desbloqueado",
+                              ? "Usuario desbloqueado"
+                              : "Usuario bloqueado",
                           color: usuarioProvider.usuarios[index].bloqueado
-                              ? Constants.errorColor
-                              : Constants.successColor);
+                              ? Constants.successColor
+                              : Constants.errorColor);
                     },
                   ),
                   IconButton(

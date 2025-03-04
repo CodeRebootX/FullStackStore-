@@ -39,6 +39,8 @@ class _MyHomePageState extends State<MyHomePage> {
       _formKey.currentState!.save();
     }
 
+    bool autenticado= false;
+
     for (User miUsuario in listaUsuarios) {
       if (miUsuario.getNombre() == _nombre && miUsuario.getPass() == _contrasena) {
         if (miUsuario.getBloqueado()) {
@@ -47,8 +49,10 @@ class _MyHomePageState extends State<MyHomePage> {
           );
           return;
         }
-        
-        if (miUsuario.getAdministrador() == false) {
+
+        autenticado = true;
+
+        if (!miUsuario.getAdministrador()) {
           Navigator.push(
             context, MaterialPageRoute(
               builder: (context) => MyStartedPage(user: miUsuario)
@@ -62,20 +66,23 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           );
         }
+        return;
       }
     }
 
-    if (_nombre == 'admin' && _contrasena == 'admin') {
-      user = User.empty();
-      Navigator.push(
-        context, MaterialPageRoute(
+    if (!autenticado) {
+      if (_nombre == 'admin' && _contrasena == 'admin') {
+        user = User.empty();
+        Navigator.push(
+          context, MaterialPageRoute(
           builder: (context) => MyAdminPage(usuarioAdmin: user!)
-        ),
-      );
-    } else {
-      SnaksBar.showSnackBar(
-        context, 'Usuario o Contraseña incorrecta', color: Constants.errorColor
-      );
+          ),
+        );
+      } else {
+        SnaksBar.showSnackBar(
+          context, 'Usuario o Contraseña incorrecta', color: Constants.errorColor
+        );
+      }
     }
   }
 

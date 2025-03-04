@@ -27,6 +27,20 @@ public class ProductService {
         return productRepository.save(mapToProduct(productCreationRequest)); 
     }
 
+    public Product updateProduct(Long productId, ProductCreationRequest productCreationRequest) {
+        return productRepository.findById(productId)
+        .map(existingProduct -> {
+            existingProduct.setNombre(productCreationRequest.nombre());
+            existingProduct.setDescripcion(productCreationRequest.descripcion());
+            existingProduct.setImagenPath(productCreationRequest.imagenPath());
+            existingProduct.setStock(productCreationRequest.stock());
+            existingProduct.setPrecio(productCreationRequest.precio());
+
+            return productRepository.save(existingProduct);
+        })
+        .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID. " + productId));
+    }
+
     public Product mapToProduct (ProductCreationRequest productCreationRequest) {
         Product product = new Product();
         product.setNombre(productCreationRequest.nombre());

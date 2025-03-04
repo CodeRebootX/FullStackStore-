@@ -3,7 +3,7 @@ import 'package:frontend_flutter/data/models/user.dart';
 import 'package:frontend_flutter/data/repositories/usuariorepository.dart';
 
 class UsuarioProvider with ChangeNotifier {
-  final Usuariorepository _usuariorepository = Usuariorepository();
+  final UsuarioRepository _usuariorepository = UsuarioRepository();
   List<User> _usuarios = [];
   List<User> get usuarios => _usuarios;
 
