@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/providers/usuarioprovider.dart';
+import 'package:frontend_flutter/providers/productoprovider.dart';
 import 'package:provider/provider.dart';
 import 'screens/login/pantallaprincipal.dart';
 
@@ -9,6 +10,9 @@ void main() {
       providers: [
         ChangeNotifierProvider(
           create: (context) => UsuarioProvider()..fetchUsuarios()
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ProductoProvider()..fetchProductos()
         ),
       ],
       child: const MyApp(),

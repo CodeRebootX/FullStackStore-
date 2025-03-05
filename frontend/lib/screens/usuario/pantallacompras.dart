@@ -3,11 +3,12 @@ import 'package:frontend_flutter/commons/priceformat.dart';
 import 'package:frontend_flutter/data/repositories/orderlogic.dart';
 import 'package:frontend_flutter/data/models/user.dart';
 import 'package:frontend_flutter/data/models/product.dart';
-import 'package:frontend_flutter/data/repositories/productlogic.dart';
 import 'package:frontend_flutter/commons/snacksbar.dart';
 import 'package:frontend_flutter/commons/constants.dart';
 import 'package:frontend_flutter/data/models/order.dart';
+import 'package:frontend_flutter/providers/productoprovider.dart';
 import 'package:frontend_flutter/widgets/productlist.dart';
+import 'package:provider/provider.dart';
 
 
 class ShoppingPage extends StatefulWidget {
@@ -19,11 +20,23 @@ class ShoppingPage extends StatefulWidget {
 }
 
 class _ShoppingPageState extends State<ShoppingPage> {
+  late ProductoProvider productoProvider;
   Map<int, int> cantidades = {};
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        productoProvider = Provider.of<ProductoProvider>(context, listen: false);
+        productoProvider.fetchProductos();
+      });
+    });
+  }
 
   double calcularTotal() {
     double total = 0;
-    for (var producto in ProductLogic.productos) {
+    for (var producto in productoProvider.productos) {
       int cantidad = cantidades[producto.id] ?? 0;
       total += cantidad * producto.precio;
     }
@@ -36,8 +49,10 @@ class _ShoppingPageState extends State<ShoppingPage> {
       if (cantidadActual < producto.stock) {
         cantidades[producto.id] = cantidadActual + 1;
       } else {
-        SnaksBar.showSnackBar(context, "No hay suficiente stock disponible",
-            color: Constants.warningColor);
+        SnaksBar.showSnackBar(
+          context, "No hay suficiente stock disponible",
+          color: Constants.warningColor
+        );
       }
     });
   }
@@ -52,12 +67,13 @@ class _ShoppingPageState extends State<ShoppingPage> {
   }
 
   bool validarStock() {
-    for (var producto in ProductLogic.productos) {
+    for (var producto in productoProvider.productos) {
       int cantidad = cantidades[producto.id] ?? 0;
       if (cantidad > producto.stock) {
-        SnaksBar.showSnackBar(context,
-            "${producto.nombre}: No hay suficiente stock. Stock disponible: ${producto.stock}",
-            color: Constants.errorColor);
+        SnaksBar.showSnackBar(
+          context, "${producto.nombre}: No hay suficiente stock. Stock disponible: ${producto.stock}",
+          color: Constants.errorColor
+        );
         return false;
       }
     }
@@ -67,8 +83,10 @@ class _ShoppingPageState extends State<ShoppingPage> {
   void realizarCompra() {
     bool hayProductos = cantidades.values.any((cantidad) => cantidad > 0);
     if (!hayProductos) {
-      SnaksBar.showSnackBar(context, "Seleccione al menos un producto",
-          color: Constants.warningColor);
+      SnaksBar.showSnackBar(
+        context, "Seleccione al menos un producto",
+        color: Constants.warningColor
+      );
       return;
     }
 
@@ -92,7 +110,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
                   )
                 ),
                 const SizedBox(height: 8),
-                ...ProductLogic.productos.map((producto) {
+                ...productoProvider.productos.map((producto) {
                   int cantidad = cantidades[producto.id] ?? 0;
                   if (cantidad > 0) {
                     return Padding(
@@ -142,13 +160,13 @@ class _ShoppingPageState extends State<ShoppingPage> {
     int pedidoId = 00000000000;
     Map<int, int> productosComprados = {};
 
-    for (var producto in ProductLogic.productos) {
+    for (var producto in productoProvider.productos) {
       int cantidad = cantidades[producto.id] ?? 0;
       if (cantidad > 0) {
         if (cantidad <= producto.stock) {
           productosComprados[producto.id] = cantidad;
           producto.stock -= cantidad;
-          ProductLogic.updateProduct(producto);
+          await productoProvider.updateProducto(producto.id.toString(),producto);
         } else {
           SnaksBar.showSnackBar(
               context, "Error: Stock insuficiente para ${producto.nombre}",
@@ -157,7 +175,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
         }
       }
     }
-
+//----------------------------------------------------------------------------------------------
     Order pedido = Order(
       id: pedidoId,
       comprador: widget.usuario.nombre,
@@ -173,51 +191,59 @@ class _ShoppingPageState extends State<ShoppingPage> {
       cantidades.clear();
     });
   }
-
-  @override
+//----------------------------------------------------------------------------------------------
+ @override
   Widget build(BuildContext context) {
-    List<Product> productos = ProductLogic.productos;
-    return Stack(
-      children: [
-        SingleChildScrollView(
-          child: Column(
-            children: [
-              if (productos.isEmpty)
-                const Center(
-                  child: Text(
-                    "No hay productos disponibles",
-                    style: TextStyle(fontSize: 18),
-                  ),
-                )
-              else
-                ...productos.map((producto) {
-                  int currentQuantity = cantidades[producto.id] ?? 0;
-                  return ProductListItem(
-                    producto: producto,
-                    cantidad: currentQuantity,
-                    onIncrement: () => incrementarCantidad(producto),
-                    onDecrement: () => decrementarCantidad(producto),
-                  );
-                }),
-              const SizedBox(height: 80),
-            ],
-          ),
-        ),
-        Positioned(
-          bottom: 16,
-          left: 150,
-          right: 150,
-          child: ElevatedButton(
-            onPressed: realizarCompra,
-            style: ElevatedButton.styleFrom(
-              foregroundColor: Colors.white,
-              backgroundColor: Colors.blueAccent,
-              textStyle: const TextStyle(fontSize: 15),
+
+
+    return Consumer<ProductoProvider>(
+      builder: (context, provider, child) {
+        if (provider.productos.isEmpty) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        return Stack(
+          children: [
+            SingleChildScrollView(
+              child: Column(
+                children: [
+                  if (provider.productos.isEmpty)
+                    const Center(
+                      child: Text(
+                        "No hay productos disponibles",
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    )
+                  else
+                    ...provider.productos.map((producto) {
+                      int currentQuantity = cantidades[producto.id] ?? 0;
+                      return ProductListItem(
+                        producto: producto,
+                        cantidad: currentQuantity,
+                        onIncrement: () => incrementarCantidad(producto),
+                        onDecrement: () => decrementarCantidad(producto),
+                      );
+                    }),
+                  const SizedBox(height: 80),
+                ],
+              ),
             ),
-            child: const Text("Realizar Compra"),
-          ),
-        ),  
-      ],
+            Positioned(
+              bottom: 16,
+              left: 150,
+              right: 150,
+              child: ElevatedButton(
+                onPressed: realizarCompra,
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.blueAccent,
+                  textStyle: const TextStyle(fontSize: 15),
+                ),
+                child: const Text("Realizar Compra"),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

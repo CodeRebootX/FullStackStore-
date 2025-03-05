@@ -1,6 +1,8 @@
 package com.example.demo.services;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.example.demo.models.request.ProductCreationRequest;
 import com.example.demo.models.Product;
@@ -53,7 +55,12 @@ public class ProductService {
     }
 
     public void removeProduct(Long id) {
-        productRepository.deleteById(id);
+        if (productRepository.existsById(id)) {
+            productRepository.deleteById(id);
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "PRODUCTO NO ENCONTRADO", null);
+        }
+        
     }
 
     public Optional<Product> getProduct (final long id) {

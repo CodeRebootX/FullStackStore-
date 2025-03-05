@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:frontend_flutter/data/repositories/productlogic.dart';
 import 'package:frontend_flutter/data/models/product.dart';
 import 'package:frontend_flutter/commons/producto.dart';
 import 'package:frontend_flutter/commons/validations.dart';
 import 'package:frontend_flutter/commons/dialogs.dart';
 import 'package:frontend_flutter/commons/images.dart';
 import 'package:frontend_flutter/commons/constants.dart';
-import 'dart:math' show Random;
+import 'package:frontend_flutter/providers/productoprovider.dart';
+import 'package:provider/provider.dart';
 
 class MyProductPage extends StatefulWidget {
   const MyProductPage({super.key});
@@ -16,6 +16,7 @@ class MyProductPage extends StatefulWidget {
 }
 
 class _MyProductPageState extends State<MyProductPage> {
+  
   void _nuevoProducto() {
     TextEditingController nameController = TextEditingController();
     TextEditingController descriptionController = TextEditingController();
@@ -95,19 +96,18 @@ class _MyProductPageState extends State<MyProductPage> {
                   }
 
                   await Dialogs.showLoadingSpinner(context);
-
-                  int nuevoId = Random().nextInt(10000);
-                  Product nuevoProducto = Product(
-                    id: nuevoId,
+                  Product newProduct = Product(
+                    id: 0,
                     nombre: nameController.text,
                     descripcion: descriptionController.text,
-                    precio:
-                        double.parse(priceController.text.replaceAll(',', '.')),
-                    stock: int.parse(stockController.text),
                     imagenPath: PathImage ?? Images.getDefaultImage(false),
+                    stock: int.parse(stockController.text),
+                    precio: double.parse(priceController.text)
                   );
 
-                  ProductLogic.addProduct(nuevoProducto);
+                  final ProductoProvider productoProvider = Provider.of<ProductoProvider>(context, listen: false);
+                  productoProvider.addProducto(newProduct);
+
                   Navigator.pop(dialogContext);
                   setState(() {});
                   Dialogs.showSnackBar(context, "Producto creado correctamente",
@@ -126,16 +126,12 @@ class _MyProductPageState extends State<MyProductPage> {
     );
   }
 
-  void _actualizarProducto(Product Pproduct) {
-    TextEditingController nombreController =
-        TextEditingController(text: Pproduct.nombre);
-    TextEditingController descripcionController =
-        TextEditingController(text: Pproduct.descripcion);
-    TextEditingController precioController =
-        TextEditingController(text: Pproduct.precio.toString());
-    TextEditingController stockController =
-        TextEditingController(text: Pproduct.stock.toString());
-    String? imagenPath = Pproduct.imagenPath;
+  void _editProduct(Product product) {
+    TextEditingController nombreController = TextEditingController(text: product.nombre);
+    TextEditingController descripcionController = TextEditingController(text: product.descripcion);
+    TextEditingController precioController = TextEditingController(text: product.precio.toString());
+    TextEditingController stockController = TextEditingController(text: product.stock.toString());
+    String? imagenPath = product.imagenPath;
 
     showDialog(
       context: context,
@@ -198,26 +194,27 @@ class _MyProductPageState extends State<MyProductPage> {
               ),
               TextButton(
                 onPressed: () async {
-                  if (Validations.validateRequired(nombreController.text) !=
-                          null ||
-                      Validations.validatePrice(precioController.text) !=
-                          null ||
+                  if (Validations.validateRequired(nombreController.text) != null ||
+                      Validations.validatePrice(precioController.text) != null ||
                       Validations.validateStock(stockController.text) != null) {
-                    Dialogs.showSnackBar(context,
-                        "Por favor, complete todos los campos correctamente",
-                        color: Constants.errorColor);
+                    Dialogs.showSnackBar(
+                      context, "Por favor, complete todos los campos correctamente",
+                      color: Constants.errorColor);
                     return;
                   }
 
                   await Dialogs.showLoadingSpinner(context);
 
-                  Pproduct.nombre = nombreController.text;
-                  Pproduct.descripcion = descripcionController.text;
-                  Pproduct.precio =
-                      double.parse(precioController.text.replaceAll(',', '.'));
-                  Pproduct.stock = int.parse(stockController.text);
-                  Pproduct.imagenPath = imagenPath ?? Images.getDefaultImage(false);
-                  ProductLogic.updateProduct(Pproduct);
+                  Product productoEditado = product.copyWith(
+                    nombre: nombreController.text,
+                    descripcion: descripcionController.text,
+                    imagenPath: imagenPath ?? Images.getDefaultImage(false),
+                    stock: int.parse(stockController.text),
+                    precio: double.parse(precioController.text.replaceAll(',', '.')),
+                  );
+
+                  final productoProvider = Provider.of<ProductoProvider>(context, listen: false);
+                  productoProvider.updateProducto(product.id.toString(), productoEditado);
 
                   Navigator.pop(dialogContext);
                   setState(() {});
@@ -236,7 +233,9 @@ class _MyProductPageState extends State<MyProductPage> {
 
   @override
   Widget build(BuildContext context) {
-    List<Product> listProducts = ProductLogic.productos;
+
+    final productoProvider = Provider.of<ProductoProvider>(context);
+    
     return Scaffold(
       appBar: AppBar(
         title: const Text("Gestión de Productos"),
@@ -249,23 +248,23 @@ class _MyProductPageState extends State<MyProductPage> {
         children: [
           ListView.builder(
             padding: const EdgeInsets.only(bottom: 80),
-            itemCount: listProducts.length,
+            itemCount: productoProvider.productos.length,
             itemBuilder: (context, index) {
-              Product producto = listProducts[index];
+              //Product producto = productoProvider.productos[index];
               return CustomProducto(
-                product: producto,
-                onEdit: () => _actualizarProducto(producto),
+                //product: producto,
+                product: productoProvider.productos[index],
+                onEdit: () => _editProduct(productoProvider.productos[index]),
                 onDelete: () async {
                   bool? confirmar = await Dialogs.showConfirmDialog(
                       context: context,
                       title: "Confirmar eliminación",
-                      content: "¿Está seguro de eliminar ${producto.nombre}?",
+                      content: "¿Está seguro de eliminar ${productoProvider.productos[index].nombre}?",
                       style: Text(''));
 
                   if (confirmar == true) {
                     await Dialogs.showLoadingSpinner(context);
-                    ProductLogic.deleteProduct(producto.id);
-                    setState(() {});
+                    productoProvider.deleteProducto(productoProvider.productos[index].id);
                     Dialogs.showSnackBar(
                         context, "Producto eliminado correctamente",
                         color: Constants.successColor);

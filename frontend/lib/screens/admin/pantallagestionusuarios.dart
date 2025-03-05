@@ -149,19 +149,19 @@ class _AdministerManagementPageState extends State<AdministerManagementPage> {
               ),
               ElevatedButton(
                 onPressed: () async {
-                  String? passwordError =
-                      Validations.validatePassword(passwordController.text);
-                  String? ageError =
-                      Validations.validateAge(ageController.text);
+                  String? passwordError = Validations.validatePassword(passwordController.text);
+                  String? ageError = Validations.validateAge(ageController.text);
 
                   if (passwordError != null) {
-                    Dialogs.showSnackBar(context, passwordError,
-                        color: Constants.errorColor);
+                    Dialogs.showSnackBar(
+                      context, passwordError,
+                      color: Constants.errorColor);
                     return;
                   }
                   if (ageError != null) {
-                    Dialogs.showSnackBar(context, ageError,
-                        color: Constants.errorColor);
+                    Dialogs.showSnackBar(
+                      context, ageError,
+                      color: Constants.errorColor);
                     return;
                   }
 
@@ -206,6 +206,7 @@ class _AdministerManagementPageState extends State<AdministerManagementPage> {
 
   @override
   Widget build(BuildContext context)  {
+    
     final usuarioProvider = Provider.of<UsuarioProvider>(context);
     
       //.where((u) => u.nombre != "admin"&& u.nombre != widget.currentAdmin.nombre)
