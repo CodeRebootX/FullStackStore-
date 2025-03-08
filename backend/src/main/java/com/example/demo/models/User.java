@@ -1,4 +1,7 @@
 package com.example.demo.models;
+import java.util.ArrayList;
+import java.util.List;
+
 //import java.util.Objects;
 import jakarta.persistence.*;
 
@@ -32,6 +35,9 @@ public class User {
 
     @Column(name="bloqueado")
     private boolean bloqueado;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Pedido> pedidos = new ArrayList<>();
 
     public User() {
     }

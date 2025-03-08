@@ -7,7 +7,5 @@ class OrderLogic {
     pedidos.add(pedido);
   }
 
-  static List<Order> userOrder(String usuario) {
-    return pedidos.where((p) => p.comprador == usuario).toList();
-  }
+  
 }

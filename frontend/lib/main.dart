@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend_flutter/providers/pedidoprovider.dart';
 import 'package:frontend_flutter/providers/usuarioprovider.dart';
 import 'package:frontend_flutter/providers/productoprovider.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +14,9 @@ void main() {
         ),
         ChangeNotifierProvider(
           create: (context) => ProductoProvider()..fetchProductos()
+        ),
+        ChangeNotifierProvider(
+          create: (context) => PedidoProvider()..fetchPedidos()
         ),
       ],
       child: const MyApp(),

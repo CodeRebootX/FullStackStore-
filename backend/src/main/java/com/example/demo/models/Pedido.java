@@ -1,15 +1,15 @@
 package com.example.demo.models;
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.*;
 
 @Entity
-@Table(name="Pedido")
+@Table(name="pedido")
 public class Pedido {
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
-
-    /*@Column(name="descripcion")
-    private String descripcion;*/
 
     @Column(name="total")
     private double total;
@@ -17,8 +17,13 @@ public class Pedido {
     @Column(name="estado")
     private String estado;
 
-    @Column(name="comprador")
-    private String comprador;
+
+    @ManyToOne
+    @JoinColumn(name="usuario_Id", nullable = false)
+    private User usuario;
+
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<DetallePedido> detalles = new ArrayList<>();
 
     public Pedido() {
     }
@@ -31,20 +36,12 @@ public class Pedido {
         this.id = id;
     }
 
-    /*public String getDescripcion() {
-        return descripcion;
-    }
-
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }*/
-
     public double getTotal() {
         return total;
     }
 
-    public void setTotal(double precio) {
-        this.total = precio;
+    public void setTotal(double total) {
+        this.total = total;
     }
 
     public String getEstado() {
@@ -55,12 +52,20 @@ public class Pedido {
         this.estado = estado;
     }
 
-    public String getComprador() {
-        return comprador;
+    public User getUsuario() {
+        return usuario;
     }
 
-    public void setComprador(String comprador) {
-        this.comprador = comprador;
+    public void setUsuario(User usuario) {
+        this.usuario = usuario;
+    }
+
+    public List<DetallePedido> getDetalles() {
+        return detalles;
+    }
+
+    public void setDetalles(List<DetallePedido> detalles) {
+        this.detalles = detalles;
     }
 
     @Override
@@ -68,12 +73,12 @@ public class Pedido {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((id == null) ? 0 : id.hashCode());
-        //result = prime * result + ((descripcion == null) ? 0 : descripcion.hashCode());
         long temp;
         temp = Double.doubleToLongBits(total);
         result = prime * result + (int) (temp ^ (temp >>> 32));
         result = prime * result + ((estado == null) ? 0 : estado.hashCode());
-        result = prime * result + ((comprador == null) ? 0 : comprador.hashCode());
+        result = prime * result + ((usuario == null) ? 0 : usuario.hashCode());
+        result = prime * result + ((detalles == null) ? 0 : detalles.hashCode());
         return result;
     }
 
@@ -91,11 +96,6 @@ public class Pedido {
                 return false;
         } else if (!id.equals(other.id))
             return false;
-        /*if (descripcion == null) {
-            if (other.descripcion != null)
-                return false;
-        } else if (!descripcion.equals(other.descripcion))
-            return false;*/
         if (Double.doubleToLongBits(total) != Double.doubleToLongBits(other.total))
             return false;
         if (estado == null) {
@@ -103,10 +103,15 @@ public class Pedido {
                 return false;
         } else if (!estado.equals(other.estado))
             return false;
-        if (comprador == null) {
-            if (other.comprador != null)
+        if (usuario == null) {
+            if (other.usuario != null)
                 return false;
-        } else if (!comprador.equals(other.comprador))
+        } else if (!usuario.equals(other.usuario))
+            return false;
+        if (detalles == null) {
+            if (other.detalles != null)
+                return false;
+        } else if (!detalles.equals(other.detalles))
             return false;
         return true;
     }

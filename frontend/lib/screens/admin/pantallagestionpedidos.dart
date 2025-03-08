@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:frontend_flutter/data/repositories/orderlogic.dart';
+import 'package:frontend_flutter/providers/pedidoprovider.dart';
 import 'package:frontend_flutter/widgets/orderlist.dart';
 import 'package:frontend_flutter/data/models/order.dart';
 import 'package:frontend_flutter/commons/dialogs.dart';
 import 'package:frontend_flutter/commons/constants.dart';
+import 'package:provider/provider.dart';
 
 class MyOrdersPage extends StatefulWidget {
   const MyOrdersPage({super.key});
@@ -37,8 +38,7 @@ class _MyOrdersPageState extends State<MyOrdersPage> {
 
   @override
   Widget build(BuildContext context) {
-
-    List<Order> listOrders = OrderLogic.pedidos; 
+    final pedidoProvider = Provider.of<PedidoProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text("Gestión de Pedidos"),
@@ -48,14 +48,13 @@ class _MyOrdersPageState extends State<MyOrdersPage> {
         ),
       ),
       body: ListView.builder(
-        itemCount: listOrders.length,
+        itemCount: pedidoProvider.pedidos.length,
         itemBuilder: (context, index) {
-          Order pedido = listOrders[index];
           return OrderListItem(
-            pedido: pedido,
+            pedido: pedidoProvider.pedidos[index],
             onEstadoChanged: (nuevoEstado) {
-              if (nuevoEstado != pedido.estado) {
-                _confirmAndChangeEstado(pedido, nuevoEstado);
+              if (nuevoEstado != pedidoProvider.pedidos[index].estado) {
+                _confirmAndChangeEstado(pedidoProvider.pedidos[index], nuevoEstado);
               }
             },
           );

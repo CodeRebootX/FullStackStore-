@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/commons/priceformat.dart';
-import 'package:frontend_flutter/data/repositories/orderlogic.dart';
+import 'package:frontend_flutter/data/models/orderdetail.dart';
 import 'package:frontend_flutter/data/models/user.dart';
 import 'package:frontend_flutter/data/models/product.dart';
 import 'package:frontend_flutter/commons/snacksbar.dart';
 import 'package:frontend_flutter/commons/constants.dart';
 import 'package:frontend_flutter/data/models/order.dart';
+import 'package:frontend_flutter/providers/pedidoprovider.dart';
 import 'package:frontend_flutter/providers/productoprovider.dart';
 import 'package:frontend_flutter/widgets/productlist.dart';
 import 'package:provider/provider.dart';
@@ -156,40 +157,66 @@ class _ShoppingPageState extends State<ShoppingPage> {
   }
 
   void confirmarCompra() async {
+    if (cantidades.isEmpty || !cantidades.values.any((cantidad) => cantidad > 0)) {
+      SnaksBar.showSnackBar(
+        context, "Seleccione al menos un producto",
+        color: Constants.warningColor
+      );
+      return;
+    }
 
-    int pedidoId = 00000000000;
-    Map<int, int> productosComprados = {};
+    if (!validarStock()) return;
 
+    List<DetallePedido> detallesPedido = [];
     for (var producto in productoProvider.productos) {
       int cantidad = cantidades[producto.id] ?? 0;
       if (cantidad > 0) {
         if (cantidad <= producto.stock) {
-          productosComprados[producto.id] = cantidad;
+          detallesPedido.add(DetallePedido(
+            id: 0,
+            productoId: producto.id,
+            cantidad: cantidad,
+            precio: producto.precio
+          ));
+
           producto.stock -= cantidad;
-          await productoProvider.updateProducto(producto.id.toString(),producto);
+          await productoProvider.updateProducto(producto.id.toString(), producto);
         } else {
           SnaksBar.showSnackBar(
-              context, "Error: Stock insuficiente para ${producto.nombre}",
-              color: Constants.errorColor);
+            context, "Error: Stock insuficiente para ${producto.nombre}",
+            color: Constants.errorColor
+          );
           return;
         }
       }
     }
-//----------------------------------------------------------------------------------------------
+
     Order pedido = Order(
-      id: pedidoId,
-      comprador: widget.usuario.nombre,
-      productos: productosComprados,
+      id: 0,
       total: calcularTotal(),
       estado: "Pedido",
+      usuarioId: widget.usuario.id,
+      productos: detallesPedido
     );
 
-    OrderLogic.addOrder(pedido);
-    SnaksBar.showSnackBar(context, "Compra realizada con éxito",
-        color: Constants.successColor);
-    setState(() {
-      cantidades.clear();
-    });
+    try {
+      final pedidoProvider = Provider.of<PedidoProvider>(context, listen: false);
+      await pedidoProvider.addPedido(pedido);
+
+      SnaksBar.showSnackBar(
+        context, "Compra realizada con éxito",
+        color: Constants.successColor
+      );
+
+      setState(() {
+        cantidades.clear();
+      });
+    } catch (e) {
+      SnaksBar.showSnackBar(
+        context, "Error al procesar la compra",
+        color: Constants.errorColor
+      );
+    }
   }
 //----------------------------------------------------------------------------------------------
  @override
