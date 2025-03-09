@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:frontend_flutter/commons/custombutton.dart';
+import 'package:frontend_flutter/utils/custombutton.dart';
 import 'package:frontend_flutter/screens/admin/pantallagestionpedidos.dart';
 import 'package:frontend_flutter/screens/admin/pantallagestionproductos.dart';
 import 'package:frontend_flutter/screens/admin/pantallagestionusuarios.dart';
@@ -69,9 +69,10 @@ class _MyAdminPageState extends State<MyAdminPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => AdministerManagementPage(
-                              currentAdmin: widget.usuarioAdmin,
-                            )),
+                      builder: (context) => AdministerManagementPage(
+                        currentAdmin: widget.usuarioAdmin,
+                      )
+                    ),
                   );
                 },
                 icon: Icons.supervised_user_circle,
@@ -83,7 +84,8 @@ class _MyAdminPageState extends State<MyAdminPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => MyProductPage()),
+                      builder: (context) => MyProductPage()
+                    ),
                   );
                 },
                 icon: Icons.shopping_bag,
@@ -95,7 +97,8 @@ class _MyAdminPageState extends State<MyAdminPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => MyOrdersPage()),
+                      builder: (context) => MyOrdersPage()
+                    ),
                   );
                 },
                 icon: Icons.shopping_cart,

@@ -1,9 +1,5 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:frontend_flutter/data/models/order.dart';
-import 'package:frontend_flutter/data/models/orderdetail.dart';
-import 'package:frontend_flutter/data/models/product.dart';
 import 'package:frontend_flutter/data/services/apiservice.dart';
 
 class PedidoRepository {
@@ -33,26 +29,26 @@ class PedidoRepository {
   }
 
   Future<void> anadirPedido(Order pedido) async {
-  try {
-    print("Enviando pedido a la API: ${pedido.toJson()}");
-    final response = await _apiService.dio.post("/pedidos", data: pedido.toJson());
+    try {
+      print("Enviando pedido a la API: ${pedido.toJson()}");
+      final response = await _apiService.dio.post("/pedidos", data: pedido.toJson());
 
-    if (response.statusCode == 200) {
-      print("Pedido creado correctamente: ${response.data}");
-    } else {
-      print("Respuesta inesperada de la API: ${response.statusCode} - ${response.data}");
-    }
-  } catch (e) {
-    if (e is DioException) {
-      print("Error en la API: ${e.response?.statusCode} - ${e.response?.data}");
-    } else {
-      print("Error desconocido: $e");
+      if (response.statusCode == 200) {
+        print("Pedido creado correctamente: ${response.data}");
+      } else {
+        print("Respuesta inesperada de la API: ${response.statusCode} - ${response.data}");
+      }
+    } catch (e) {
+      if (e is DioException) {
+        print("Error en la API: ${e.response?.statusCode} - ${e.response?.data}");
+      } else {
+        print("Error desconocido: $e");
+      }
     }
   }
-}
 
-  Future<void> actualizarPedido(String id, Order pedido) async {
-    await _apiService.dio.put("/pedidos/$id", data: pedido.toJson());
+  Future<void> actualizarPedido(int id, String estado) async {
+    await _apiService.dio.put("/pedidos/$id", data: {"estado": estado});
   }
 
   Future<void> eliminarPedido(int id) async {

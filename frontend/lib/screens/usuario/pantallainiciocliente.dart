@@ -4,9 +4,9 @@ import 'package:frontend_flutter/screens/usuario/pantallacompras.dart';
 import 'package:frontend_flutter/screens/usuario/pantallapedidos.dart';
 import 'package:frontend_flutter/screens/usuario/pantallayo.dart';
 import 'package:frontend_flutter/widgets/drawer.dart';
-import '../login/pantallaprincipal.dart';
-import '../../data/models/user.dart';
-import '../../widgets/bottomnavigationbar.dart';
+import 'package:frontend_flutter/screens/login/pantallaprincipal.dart';
+import 'package:frontend_flutter/data/models/user.dart';
+import 'package:frontend_flutter/widgets/bottomnavigationbar.dart';
 import 'pantallaperfil.dart';
 
 

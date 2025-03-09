@@ -1,8 +1,10 @@
 package com.example.demo.models;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 
 @Entity
-@Table(name="DetallePedido")
+@Table(name="detalle_pedido")
 public class DetallePedido {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -11,6 +13,7 @@ public class DetallePedido {
 
     @ManyToOne
     @JoinColumn(name="pedido_id", nullable = false)
+    @JsonBackReference
     private Pedido pedido;
 
 
@@ -71,8 +74,6 @@ public class DetallePedido {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((pedido == null) ? 0 : pedido.hashCode());
-        result = prime * result + ((producto == null) ? 0 : producto.hashCode());
         result = prime * result + cantidad;
         long temp;
         temp = Double.doubleToLongBits(precio);
@@ -94,16 +95,7 @@ public class DetallePedido {
                 return false;
         } else if (!id.equals(other.id))
             return false;
-        if (pedido == null) {
-            if (other.pedido != null)
-                return false;
-        } else if (!pedido.equals(other.pedido))
-            return false;
-        if (producto == null) {
-            if (other.producto != null)
-                return false;
-        } else if (!producto.equals(other.producto))
-            return false;
+    
         if (cantidad != other.cantidad)
             return false;
         if (Double.doubleToLongBits(precio) != Double.doubleToLongBits(other.precio))

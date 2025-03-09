@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/data/models/product.dart';
-import 'package:frontend_flutter/commons/producto.dart';
-import 'package:frontend_flutter/commons/validations.dart';
-import 'package:frontend_flutter/commons/dialogs.dart';
-import 'package:frontend_flutter/commons/images.dart';
-import 'package:frontend_flutter/commons/constants.dart';
+import 'package:frontend_flutter/utils/producto.dart';
+import 'package:frontend_flutter/utils/validations.dart';
+import 'package:frontend_flutter/utils/dialogs.dart';
+import 'package:frontend_flutter/utils/images.dart';
+import 'package:frontend_flutter/utils/constants.dart';
 import 'package:frontend_flutter/providers/productoprovider.dart';
 import 'package:provider/provider.dart';
 
@@ -89,9 +89,10 @@ class _MyProductPageState extends State<MyProductPage> {
                           null ||
                       Validations.validatePrice(priceController.text) != null ||
                       Validations.validateStock(stockController.text) != null) {
-                    Dialogs.showSnackBar(context,
-                        "Por favor, complete todos los campos correctamente",
-                        color: Constants.errorColor);
+                    Dialogs.showSnackBar(
+                      context, "Por favor, complete todos los campos correctamente",
+                      color: Constants.errorColor
+                    );
                     return;
                   }
 
@@ -110,8 +111,10 @@ class _MyProductPageState extends State<MyProductPage> {
 
                   Navigator.pop(dialogContext);
                   setState(() {});
-                  Dialogs.showSnackBar(context, "Producto creado correctamente",
-                      color: Constants.successColor);
+                  Dialogs.showSnackBar(
+                    context, "Producto creado correctamente",
+                    color: Constants.successColor
+                  );
                 },
                 style: ElevatedButton.styleFrom
                 (backgroundColor: Colors.blueAccent,
@@ -199,7 +202,8 @@ class _MyProductPageState extends State<MyProductPage> {
                       Validations.validateStock(stockController.text) != null) {
                     Dialogs.showSnackBar(
                       context, "Por favor, complete todos los campos correctamente",
-                      color: Constants.errorColor);
+                      color: Constants.errorColor
+                    );
                     return;
                   }
 
@@ -219,8 +223,9 @@ class _MyProductPageState extends State<MyProductPage> {
                   Navigator.pop(dialogContext);
                   setState(() {});
                   Dialogs.showSnackBar(
-                      context, "Producto actualizado correctamente",
-                      color: Constants.successColor);
+                    context, "Producto actualizado correctamente",
+                    color: Constants.successColor
+                  );
                 },
                 child: const Text("Guardar"),
               ),
@@ -250,24 +255,24 @@ class _MyProductPageState extends State<MyProductPage> {
             padding: const EdgeInsets.only(bottom: 80),
             itemCount: productoProvider.productos.length,
             itemBuilder: (context, index) {
-              //Product producto = productoProvider.productos[index];
               return CustomProducto(
-                //product: producto,
                 product: productoProvider.productos[index],
                 onEdit: () => _editProduct(productoProvider.productos[index]),
                 onDelete: () async {
                   bool? confirmar = await Dialogs.showConfirmDialog(
-                      context: context,
-                      title: "Confirmar eliminación",
-                      content: "¿Está seguro de eliminar ${productoProvider.productos[index].nombre}?",
-                      style: Text(''));
+                    context: context,
+                    title: "Confirmar eliminación",
+                    content: "¿Está seguro de eliminar ${productoProvider.productos[index].nombre}?",
+                    style: Text('')
+                  );
 
                   if (confirmar == true) {
                     await Dialogs.showLoadingSpinner(context);
                     productoProvider.deleteProducto(productoProvider.productos[index].id);
                     Dialogs.showSnackBar(
-                        context, "Producto eliminado correctamente",
-                        color: Constants.successColor);
+                      context, "Producto eliminado correctamente",
+                      color: Constants.successColor
+                    );
                   }
                 },
               );

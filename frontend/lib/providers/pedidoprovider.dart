@@ -10,8 +10,12 @@ class PedidoProvider with ChangeNotifier {
 
 
   Future<void> fetchPedidos() async {
-    _pedidos = await _pedidoRepository.getListaPedidos();
-    notifyListeners();
+    try {
+      _pedidos = await _pedidoRepository.getListaPedidos();
+      notifyListeners();
+    } catch (e) {
+      print("Error al obtener pedidos: $e");
+    }
   }
 
 
@@ -29,4 +33,10 @@ class PedidoProvider with ChangeNotifier {
     await _pedidoRepository.eliminarPedido(id);
     fetchPedidos();
   }
+
+  Future<void> updatePedidoEstado(int id, String estado) async {
+    await _pedidoRepository.actualizarPedido(id, estado);
+    fetchPedidos();
+  }
+
 }

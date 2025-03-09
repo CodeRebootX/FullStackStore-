@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:frontend_flutter/commons/custombutton.dart';
+import 'package:frontend_flutter/utils/custombutton.dart';
 import 'package:frontend_flutter/screens/usuario/pantallacontacto.dart';
 import 'package:frontend_flutter/screens/usuario/pantallaeditarusuario.dart';
-import '../../data/models/user.dart';
+import 'package:frontend_flutter/data/models/user.dart';
 
 
 class IPage extends StatefulWidget {

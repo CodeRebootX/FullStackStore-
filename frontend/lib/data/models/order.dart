@@ -1,18 +1,19 @@
 import 'package:frontend_flutter/data/models/orderdetail.dart';
+import 'package:frontend_flutter/data/models/user.dart';
 
 class Order {
   int id;
   double total;
   String estado;
-  int usuarioId;
-  List<DetallePedido> productos;
+  User usuario;
+  List<DetallePedido> detalles;
 
   Order({
     required this.id,
     required this.total,
     required this.estado,
-    required this.usuarioId,
-    required this.productos,
+    required this.usuario,
+    required this.detalles,
   });
 
 
@@ -21,8 +22,8 @@ class Order {
       id: json['id'],
       total: json['total'],
       estado: json['estado'],
-      usuarioId: json['usuarioId'],
-      productos: (json['productos'] as List)
+      usuario: User.fromJson(json['usuario']),
+      detalles: (json['detalles'] as List)
           .map((item) => DetallePedido.fromJson(item))
           .toList(),
     );
@@ -33,10 +34,8 @@ class Order {
       "id": id,
       "total": total,
       "estado": estado,
-      "usuarioId": usuarioId,
-      "productos": productos.isNotEmpty
-        ? {for (var d in productos) d.productoId: d.cantidad}
-        : {},
+      "usuario": usuario.toJson(),
+      "productos": detalles.map((d) => d.toJson()).toList(),
     };
   }
 }

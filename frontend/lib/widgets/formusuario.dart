@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/data/models/user.dart';
-import 'package:frontend_flutter/commons/validations.dart';
-import 'package:frontend_flutter/commons/images.dart';
+import 'package:frontend_flutter/utils/validations.dart';
+import 'package:frontend_flutter/utils/images.dart';
 
 class FormUsuario extends StatelessWidget {
   final User? usuarioModified;

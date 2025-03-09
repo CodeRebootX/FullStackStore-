@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/data/models/user.dart';
-import 'package:frontend_flutter/commons/images.dart';
-import 'package:frontend_flutter/commons/validations.dart';
-import 'package:frontend_flutter/commons/constants.dart';
+import 'package:frontend_flutter/utils/images.dart';
+import 'package:frontend_flutter/utils/validations.dart';
+import 'package:frontend_flutter/utils/constants.dart';
 import 'package:frontend_flutter/providers/usuarioprovider.dart';
 import 'package:frontend_flutter/widgets/formusuario.dart';
-import 'package:frontend_flutter/commons/dialogs.dart';
+import 'package:frontend_flutter/utils/dialogs.dart';
 import 'package:provider/provider.dart';
 
 class AdministerManagementPage extends StatefulWidget {
@@ -54,7 +54,6 @@ class _AdministerManagementPageState extends State<AdministerManagementPage> {
               ),
               ElevatedButton(
                 onPressed: () async {
-                  // Validación de campos
                   String? userError =
                       Validations.validateRequired(userController.text);
                   String? passwordError =
@@ -82,22 +81,23 @@ class _AdministerManagementPageState extends State<AdministerManagementPage> {
 
                   User newUser = User(
                     id: 0,
-                    trato: selectedTitle, //tengo que tocarlo despues, vamos avanzando-------------------------------------------------------------
+                    trato: selectedTitle,
                     nombre: userController.text,
                     contrasena: passwordController.text,
                     contrasena2: passwordController.text,
                     imagenPath: imagePath ?? Images.getDefaultImage(isAdmin),
                     edad: int.parse(ageController.text),
-                    lugarNacimiento: "Madrid",
+                    lugarNacimiento: "Zaragoza",
                     administrador: isAdmin,
-                    //bloqueado: false,//tengo que tocarlo despues y parece que no hace falta-----------------------------------------------
                   );
                   final usuarioProvider = Provider.of<UsuarioProvider>(context, listen: false);
                   usuarioProvider.addUsuario(newUser);
                   Navigator.pop(dialogContext);
                   setState(() {});
-                  Dialogs.showSnackBar(context, "Usuario creado correctamente",
-                      color: Constants.successColor);
+                  Dialogs.showSnackBar(
+                    context, "Usuario creado correctamente",
+                    color: Constants.successColor
+                  );
                 },
                 style: ElevatedButton.styleFrom
                 (backgroundColor: Colors.blueAccent,
@@ -166,17 +166,7 @@ class _AdministerManagementPageState extends State<AdministerManagementPage> {
                   }
 
                   await Dialogs.showLoadingSpinner(context);
-                  /*User usuarioEditado = User(
-                    id: user.id,
-                    trato: selectedTitle,//tengo que editarlo ----------------------------------------------------------------------------- 
-                    nombre: user.nombre,
-                    contrasena: passwordController.text,
-                    contrasena2: passwordController.text,
-                    edad: int.parse(ageController.text),
-                    imagenPath: imagePath ?? '',
-                    lugarNacimiento: user.lugarNacimiento,
-                    administrador: isAdmin
-                  );*/
+                  
                   User usuarioEditado = user.copyWith(
                     trato: selectedTitle,
                     contrasena: passwordController.text,
@@ -192,8 +182,9 @@ class _AdministerManagementPageState extends State<AdministerManagementPage> {
                   Navigator.pop(dialogContext);
                   setState(() {});
                   Dialogs.showSnackBar(
-                      context, "Usuario actualizado correctamente",
-                      color: Constants.successColor);
+                    context, "Usuario actualizado correctamente",
+                    color: Constants.successColor
+                  );
                 },
                 child: const Text("Guardar"),
               ),
@@ -209,9 +200,6 @@ class _AdministerManagementPageState extends State<AdministerManagementPage> {
     
     final usuarioProvider = Provider.of<UsuarioProvider>(context);
     
-      //.where((u) => u.nombre != "admin"&& u.nombre != widget.currentAdmin.nombre)
-      //.toList();
-
     return Scaffold(
       appBar: AppBar(
         title: const Text("Gestión de Usuarios"),
@@ -248,7 +236,7 @@ class _AdministerManagementPageState extends State<AdministerManagementPage> {
                     icon: const Icon(Icons.edit, color: Colors.blue),
                     onPressed: () => _editUser(usuarioProvider.usuarios[index]),
                   ),
-                  IconButton(//---------------------------------------------------------------------------------------------------------------------------------------
+                  IconButton(
                     icon: Icon(
                       usuarioProvider.usuarios[index].bloqueado ? Icons.lock : Icons.lock_open,
                       color: usuarioProvider.usuarios[index].bloqueado ? Colors.red : Colors.green,
@@ -271,19 +259,20 @@ class _AdministerManagementPageState extends State<AdministerManagementPage> {
                     icon: const Icon(Icons.delete, color: Colors.red),
                     onPressed: () async {
                       bool? confirm = await Dialogs.showConfirmDialog(
-                          context: context,
-                          title: "Confirmar eliminación",
-                          content:
-                              "¿Está seguro de eliminar a ${usuarioProvider.usuarios[index].nombre}?", 
-                              style: Text(''));
+                        context: context,
+                        title: "Confirmar eliminación",
+                        content: "¿Está seguro de eliminar a ${usuarioProvider.usuarios[index].nombre}?", 
+                        style: Text('')
+                      );
 
                       if (confirm == true) {
                         await Dialogs.showLoadingSpinner(context);
                         usuarioProvider.deleteUsuario(usuarioProvider.usuarios[index].id);
                         setState(() {});
                         Dialogs.showSnackBar(
-                            context, "Usuario eliminado correctamente",
-                            color: Constants.successColor);
+                          context, "Usuario eliminado correctamente",
+                          color: Constants.successColor
+                        );
                       }
                     },
                   ),

@@ -1,10 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:frontend_flutter/commons/priceformat.dart';
+import 'package:frontend_flutter/utils/priceformat.dart';
 import 'package:frontend_flutter/data/models/orderdetail.dart';
 import 'package:frontend_flutter/data/models/user.dart';
 import 'package:frontend_flutter/data/models/product.dart';
-import 'package:frontend_flutter/commons/snacksbar.dart';
-import 'package:frontend_flutter/commons/constants.dart';
+import 'package:frontend_flutter/utils/snacksbar.dart';
+import 'package:frontend_flutter/utils/constants.dart';
 import 'package:frontend_flutter/data/models/order.dart';
 import 'package:frontend_flutter/providers/pedidoprovider.dart';
 import 'package:frontend_flutter/providers/productoprovider.dart';
@@ -27,19 +29,17 @@ class _ShoppingPageState extends State<ShoppingPage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        productoProvider = Provider.of<ProductoProvider>(context, listen: false);
-        productoProvider.fetchProductos();
-      });
-    });
+    productoProvider = Provider.of<ProductoProvider>(context, listen: false);
+    productoProvider.fetchProductos();
   }
 
   double calcularTotal() {
     double total = 0;
     for (var producto in productoProvider.productos) {
       int cantidad = cantidades[producto.id] ?? 0;
-      total += cantidad * producto.precio;
+      if (cantidad > 0) {
+        total += cantidad * producto.precio;
+      }  
     }
     return total;
   }
@@ -174,10 +174,11 @@ class _ShoppingPageState extends State<ShoppingPage> {
         if (cantidad <= producto.stock) {
           detallesPedido.add(DetallePedido(
             id: 0,
-            productoId: producto.id,
+            producto: producto,
             cantidad: cantidad,
             precio: producto.precio
           ));
+
 
           producto.stock -= cantidad;
           await productoProvider.updateProducto(producto.id.toString(), producto);
@@ -195,9 +196,11 @@ class _ShoppingPageState extends State<ShoppingPage> {
       id: 0,
       total: calcularTotal(),
       estado: "Pedido",
-      usuarioId: widget.usuario.id,
-      productos: detallesPedido
+      usuario: widget.usuario,
+      detalles: detallesPedido
     );
+
+    print("JSON del pedido a enviar: ${jsonEncode(pedido.toJson())}");
 
     try {
       final pedidoProvider = Provider.of<PedidoProvider>(context, listen: false);
@@ -218,7 +221,7 @@ class _ShoppingPageState extends State<ShoppingPage> {
       );
     }
   }
-//----------------------------------------------------------------------------------------------
+
  @override
   Widget build(BuildContext context) {
 

@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import '../data/models/product.dart';
-import '../commons/priceformat.dart';
+import 'priceformat.dart';
 
 class CustomProducto extends StatelessWidget {
   final Product product;

@@ -28,10 +28,6 @@ public class UserService {
         return userRepository.save(mapToUser(userCreationRequest));
     }
 
-    /*public User updateUser(UserCreationRequest userCreationRequest) {
-        return userRepository.save(mapToUser(userCreationRequest));
-    }*/
-
     public User updateUser(Long userId, UserCreationRequest userCreationRequest) {
         return userRepository.findById(userId)
             .map(existingUser -> {

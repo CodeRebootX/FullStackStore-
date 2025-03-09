@@ -1,12 +1,14 @@
+import 'package:frontend_flutter/data/models/product.dart';
+
 class DetallePedido {
   int id;
-  int productoId;
+  Product producto;
   int cantidad;
   double precio;
 
   DetallePedido({
     required this.id,
-    required this.productoId,
+    required this.producto,
     required this.cantidad,
     required this.precio,
   });
@@ -14,7 +16,7 @@ class DetallePedido {
   factory DetallePedido.fromJson(Map<String, dynamic> json) {
     return DetallePedido(
       id: json['id'],
-      productoId: json['productoId'],
+      producto: Product.fromJson(json['producto']),
       cantidad: json['cantidad'],
       precio: json['precio'],
     );
@@ -23,11 +25,9 @@ class DetallePedido {
   Map<String, dynamic> toJson() {
     return {
       "id": id,
-      "producto": productoId,
+      "producto": producto.toJson(),
       "cantidad": cantidad,
       "precio": precio,
     };
   }
-
-
 }

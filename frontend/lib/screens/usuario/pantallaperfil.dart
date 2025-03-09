@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend_flutter/data/models/user.dart';
 
 class ProfilePage extends StatelessWidget {
-  final User usuarioActual; // Usuario conectado
+  final User usuarioActual; 
 
   const ProfilePage({super.key, required this.usuarioActual});
 

@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/providers/usuarioprovider.dart';
-import 'package:frontend_flutter/commons/constants.dart';
-import 'package:frontend_flutter/commons/custombutton.dart';
-//import 'package:frontend_flutter/providers/usuarioprovider.dart';
+import 'package:frontend_flutter/utils/constants.dart';
+import 'package:frontend_flutter/utils/custombutton.dart';
 import 'package:frontend_flutter/screens/admin/pantallaadministrador.dart';
 import 'package:frontend_flutter/screens/login/pantallaregistro.dart';
 import 'package:frontend_flutter/screens/usuario/pantallainiciocliente.dart';
 import 'package:frontend_flutter/data/models/user.dart';
-import 'package:frontend_flutter/commons/snacksbar.dart';
+import 'package:frontend_flutter/utils/snacksbar.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
@@ -33,8 +32,11 @@ class _MyHomePageState extends State<MyHomePage> {
   var logger = Logger();
 
   Future<void> _pantallaInicio() async {
+
     final usuarioProvider = Provider.of<UsuarioProvider>(context, listen: false);
+
     List<User> listaUsuarios = await usuarioProvider.fetchListaUsuarios();
+
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
     }
@@ -45,7 +47,8 @@ class _MyHomePageState extends State<MyHomePage> {
       if (miUsuario.getNombre() == _nombre && miUsuario.getPass() == _contrasena) {
         if (miUsuario.getBloqueado()) {
           SnaksBar.showSnackBar(
-            context, "Usuario bloqueado, por favor contacta con el administrador", color: Constants.errorColor
+            context, "Usuario bloqueado, por favor contacta con el administrador",
+            color: Constants.errorColor
           );
           return;
         }
@@ -80,7 +83,8 @@ class _MyHomePageState extends State<MyHomePage> {
         );
       } else {
         SnaksBar.showSnackBar(
-          context, 'Usuario o Contraseña incorrecta', color: Constants.errorColor
+          context, 'Usuario o Contraseña incorrecta',
+          color: Constants.errorColor
         );
       }
     }
@@ -90,57 +94,6 @@ class _MyHomePageState extends State<MyHomePage> {
     Navigator.push(context,
         MaterialPageRoute(builder: (context) => const MyRegisterPage()));
   }
-
-  void openStarted() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => MyStartedPage(user: user!)),
-    );
-  }
-
-  void onItemTapped(int index) {
-    setState(() {
-      selectedIndex = index;
-    });
-  }
-
-  void openStartedAdmin() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => MyAdminPage(usuarioAdmin: user!)),
-    );
-  }
-
-  /*void startSession() {
-    if (_formKey.currentState!.validate()) {
-      String usuario = userController.text;
-      String contrasena = passController.text;
-
-      String? mensajeError = Logica.validarUser(usuario, contrasena);
-      if (mensajeError != null) {
-        SnaksBar.showSnackBar(context, mensajeError,
-            color: Constants.errorColor);
-        return;
-      }
-
-      User? user = Logica.findUser(usuario);
-      if (user != null) {
-        if (user.administrador) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => MyAdminPage(usuarioAdmin:  user)),
-          );
-        } else {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => MyStartedPage(user: user)),
-          );
-        }
-      }
-    }
-  }*/
-
 
   void olvidasteContrasena(BuildContext context) {
     final usuarioProvider = Provider.of<UsuarioProvider>(context, listen: false);
@@ -167,12 +120,14 @@ class _MyHomePageState extends State<MyHomePage> {
                 if (miUsuario.getNombre() == nombre) {
                   String contrasenaUser = miUsuario.getPass();
                   SnaksBar.showSnackBar(
-                    context, "La contrasena es: $contrasenaUser", color: Constants.successColor
+                    context, "La contrasena es: $contrasenaUser",
+                    color: Constants.successColor
                   );
                   break; 
                 } else {
                   SnaksBar.showSnackBar(
-                    context, "Usuario no encontrado", color: Constants.errorColor
+                    context, "Usuario no encontrado",
+                    color: Constants.errorColor
                   );
                 }
               }

@@ -1,6 +1,9 @@
 package com.example.demo.models;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.*;
 
@@ -23,6 +26,7 @@ public class Pedido {
     private User usuario;
 
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<DetallePedido> detalles = new ArrayList<>();
 
     public Pedido() {
@@ -78,7 +82,6 @@ public class Pedido {
         result = prime * result + (int) (temp ^ (temp >>> 32));
         result = prime * result + ((estado == null) ? 0 : estado.hashCode());
         result = prime * result + ((usuario == null) ? 0 : usuario.hashCode());
-        result = prime * result + ((detalles == null) ? 0 : detalles.hashCode());
         return result;
     }
 
@@ -107,11 +110,6 @@ public class Pedido {
             if (other.usuario != null)
                 return false;
         } else if (!usuario.equals(other.usuario))
-            return false;
-        if (detalles == null) {
-            if (other.detalles != null)
-                return false;
-        } else if (!detalles.equals(other.detalles))
             return false;
         return true;
     }

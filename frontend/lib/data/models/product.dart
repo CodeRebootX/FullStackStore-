@@ -63,7 +63,7 @@ class Product {
       descripcion: json['descripcion'] ?? '',
       imagenPath: json['imagenPath'] ?? '',
       stock: json['stock'] ?? 0,
-      precio: (json['precio'] ?? 0.0).toDouble(),
+      precio: (json['precio'] as num?)?.toDouble() ?? 0.0,
     );
   }
 

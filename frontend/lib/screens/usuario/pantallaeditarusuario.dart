@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/data/models/user.dart';
-//import 'package:frontend_flutter/data/repositories/usuariorepository.dart';
 import 'package:frontend_flutter/providers/usuarioprovider.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
@@ -55,7 +54,7 @@ class _EditionUserPageState extends State<EditionUserPage> {
   if (_formKey.currentState!.validate()) {
     User updatedUser = User(
       id: user.id,
-      trato: _selectedTitle, //Tengo que editarlo despues, vamos viendo-------------------------------------------------------------------
+      trato: _selectedTitle,
       nombre: user.nombre,
       contrasena: _passwordController.text.isEmpty ? user.contrasena : _passwordController.text,
       contrasena2: _confirmPasswordController.text.isEmpty ? user.contrasena2 : _confirmPasswordController.text,           

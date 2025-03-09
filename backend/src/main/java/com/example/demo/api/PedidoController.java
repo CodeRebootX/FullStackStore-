@@ -1,12 +1,13 @@
 package com.example.demo.api;
 
 import java.util.List;
+import java.util.Map;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.demo.models.Pedido;
+import com.example.demo.models.request.DetallePedidoRequest;
 import com.example.demo.models.request.PedidoCreationRequest;
 import com.example.demo.services.PedidoService;
 
@@ -23,23 +24,15 @@ public class PedidoController {
 
     @PostMapping
     public ResponseEntity<?> createPedido(@RequestBody PedidoCreationRequest pedidoCreationRequest) {
-        try {
-            System.out.println("Recibiendo peido: " + pedidoCreationRequest);
-            Pedido pedido = pedidoService.createPedido(pedidoCreationRequest);
-            return ResponseEntity.ok(pedido);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error en el servidor: " + e.getMessage());
+        for (DetallePedidoRequest detalle : pedidoCreationRequest.productos()) {
+        if (detalle.producto() == null) {
+            return ResponseEntity.badRequest().body("Error: producto no puede ser null");
         }
-        
     }
-
-    /*@PostMapping
-    public Pedido createPedido(@RequestBody PedidoCreationRequest pedidoCreationRequest) {
-        
-        return pedidoService.createPedido(pedidoCreationRequest);
-    }*/
+    
+    Pedido nuevoPedido = pedidoService.createPedido(pedidoCreationRequest);
+    return ResponseEntity.ok(nuevoPedido);  
+    }
 
     @GetMapping("/{id}")
     public Pedido getPedido(@PathVariable Long id) {
@@ -47,7 +40,7 @@ public class PedidoController {
     }
 
     @GetMapping("/usuario/{usuarioId}")
-    public List<Pedido> getPedidosPorUsario(@PathVariable Long usuarioId) {
+    public List<Pedido> getPedidosPorUsuario(@PathVariable Long usuarioId) {
         return pedidoService.getPedidosPorUsuario(usuarioId);
     }
 
@@ -59,5 +52,15 @@ public class PedidoController {
     @DeleteMapping("/{id}")
     public void removePedido (@PathVariable Long id) {
         pedidoService.removePedido(id);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Pedido> updateEstadoPedido(@PathVariable Long id, @RequestBody Map<String, String> request) {
+        String nuevoEstado = request.get("estado");
+        if (nuevoEstado == null || nuevoEstado.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        Pedido pedidoActualizado = pedidoService.updateEstadoPedido(id, nuevoEstado);
+        return ResponseEntity.ok(pedidoActualizado);
     }
 }

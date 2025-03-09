@@ -1,13 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/data/models/user.dart';
-//import 'package:frontend_flutter/data/repositories/usuariorepository.dart';
 import 'package:frontend_flutter/providers/usuarioprovider.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:numberpicker/numberpicker.dart';
-import 'package:frontend_flutter/commons/snacksbar.dart';
-import 'package:frontend_flutter/commons/constants.dart';
+import 'package:frontend_flutter/utils/snacksbar.dart';
+import 'package:frontend_flutter/utils/constants.dart';
 import 'package:provider/provider.dart';
 
 class MyRegisterPage extends StatefulWidget {
@@ -21,7 +20,6 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
   final TextEditingController _userController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
-  //final TextEditingController _birthplaceController = TextEditingController();
   int _selectedAge = 20;
   String _selectedTitle = 'Sr.';
   String _selectedBirthplace = 'Zaragoza';
@@ -34,10 +32,8 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
     if (pickedFile != null) {
       setState(() {
         _image = kIsWeb ? null : File(pickedFile.path);
-        //_image = File(pickedFile.path);
       });
-      print("Imagen seleccionada: ${pickedFile.path}");
-      
+      print("Imagen seleccionada: ${pickedFile.path}"); 
     }
   }
 
@@ -57,8 +53,10 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
       );
       final usuarioProvider = Provider.of<UsuarioProvider>(context, listen: false);
       usuarioProvider.addUsuario(usuario);
-      SnaksBar.showSnackBar(context, "Usuario registrado exitosamente",
-            color: Constants.successColor);
+      SnaksBar.showSnackBar(
+        context, "Usuario registrado exitosamente",
+        color: Constants.successColor
+      );
       Navigator.pop(context);
     } else if (_formKey.currentState!.validate() && !_acceptTerms) {
       showDialog(
@@ -96,15 +94,13 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
                       Radio<String>(
                         value: 'Sr.',
                         groupValue: _selectedTitle,
-                        onChanged: (value) =>
-                            setState(() => _selectedTitle = value!),
+                        onChanged: (value) => setState(() => _selectedTitle = value!),
                       ),
                       Text('Sr.'),
                       Radio<String>(
                         value: 'Sra.',
                         groupValue: _selectedTitle,
-                        onChanged: (value) =>
-                            setState(() => _selectedTitle = value!),
+                        onChanged: (value) => setState(() => _selectedTitle = value!),
                       ),
                       Text('Sra.'),
                     ],
@@ -149,56 +145,10 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
               DropdownButtonFormField<String>(
                 value: _selectedBirthplace,
                 decoration: InputDecoration(labelText: 'Lugar de Nacimiento'),
-                items: [
-                  'A Coruña', 'Albacete', 'Alicante',
-                  'Almería',
-                  'Ávila',
-                  'Badajoz',
-                  'Barcelona',
-                  'Bilbao',
-                  'Burgos',
-                  'Cáceres',
-                  'Cádiz',
-                  'Castellón',
-                  'Ciudad Real',
-                  'Córdoba',
-                  'Cuenca',
-                  'Girona',
-                  'Granada',
-                  'Guadalajara',
-                  'Huelva',
-                  'Huesca',
-                  'Jaén',
-                  'La Rioja',
-                  'Las Palmas',
-                  'León',
-                  'Lleida',
-                  'Lugo',
-                  'Madrid',
-                  'Málaga',
-                  'Murcia',
-                  'Ourense',
-                  'Oviedo',
-                  'Palencia',
-                  'Pamplona',
-                  'Pontevedra',
-                  'Salamanca',
-                  'San Sebastián',
-                  'Santander',
-                  'Segovia',
-                  'Sevilla',
-                  'Soria',
-                  'Tarragona',
-                  'Teruel',
-                  'Toledo',
-                  'Valencia',
-                  'Valladolid',
-                  'Vitoria',
-                  'Zamora',
-                  'Zaragoza'
-                ].map((city) {
+                items: Constants.capitales.map((city) {
                   return DropdownMenuItem(value: city, child: Text(city));
                 }).toList(),
+                
                 onChanged: (value) =>
                     setState(() => _selectedBirthplace = value!),
               ),
@@ -226,9 +176,10 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
                   Expanded(
                     child: GestureDetector(
                       onTap: () => setState(() => _acceptTerms = !_acceptTerms),
-                      child: Text('Acepto los términos y condiciones',
-                          style:
-                              TextStyle(decoration: TextDecoration.underline)),
+                      child: Text(
+                        'Acepto los términos y condiciones',
+                        style:TextStyle(decoration: TextDecoration.underline)
+                      ),
                     ),
                   ),
                 ],

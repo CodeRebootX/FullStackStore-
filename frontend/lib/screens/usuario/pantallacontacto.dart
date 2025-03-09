@@ -50,7 +50,6 @@ class _ContactPageState extends State<ContactPage> {
                 ),
                 SizedBox(height: 20),
 
-              // Tarjeta con la información de contacto
               Card(
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                 elevation: 5,
@@ -65,7 +64,6 @@ class _ContactPageState extends State<ContactPage> {
 
               SizedBox(height: 20),
 
-              // Mapa interactivo con marcador
               Text("Ubicación", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               SizedBox(height: 10),
               Container(
@@ -109,7 +107,6 @@ class _ContactPageState extends State<ContactPage> {
 
               SizedBox(height: 10),
 
-              // Botón para abrir Google Maps
               ElevatedButton.icon(
                 onPressed: () => _launchURL(googleMapsUrl),
                 icon: Icon(Icons.map),
@@ -127,7 +124,6 @@ class _ContactPageState extends State<ContactPage> {
     );
   }
 
-  // Widget reutilizable para la información de contacto
   Widget _buildContactTile(IconData icon, String title, String subtitle, String url) {
     return ListTile(
       leading: Icon(icon, color: Colors.blueAccent),

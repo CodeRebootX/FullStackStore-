@@ -104,7 +104,7 @@ class User {
       "nombre": nombre,
       "contrasena": contrasena,
       "contrasena2": contrasena2,
-      "imagen": imagenPath,
+      "imagenPath": imagenPath,
       "edad": edad,
       "lugarNacimiento": lugarNacimiento,
       "administrador": administrador,

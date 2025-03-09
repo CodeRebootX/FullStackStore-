@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/data/models/order.dart';
 import 'package:frontend_flutter/data/models/product.dart';
-import 'package:frontend_flutter/commons/images.dart';
-import 'package:frontend_flutter/commons/constants.dart';
-import 'package:frontend_flutter/commons/priceformat.dart';
+import 'package:frontend_flutter/utils/images.dart';
+import 'package:frontend_flutter/utils/constants.dart';
+import 'package:frontend_flutter/utils/priceformat.dart';
 import 'package:frontend_flutter/data/repositories/productorepository.dart';
 
 class OrderListItem extends StatefulWidget {
@@ -64,15 +64,15 @@ class _OrderListItemState extends State<OrderListItem> {
                   style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  "Usuario: ${widget.pedido.usuarioId}",
+                  "Usuario: ${widget.pedido.usuario.nombre}",
                   style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                 ),
                 const SizedBox(height: 8),
-                ...widget.pedido.productos.map((detalle) {
+                ...widget.pedido.detalles.map((detalle) {
                   final producto = productos.firstWhere(
-                    (p) => p.id == detalle.productoId,
+                    (p) => p.id == detalle.producto.id,
                     orElse: () => Product(
-                      id: detalle.productoId,
+                      id: detalle.producto.id,
                       nombre: 'Producto desconocido',
                       descripcion: '',
                       imagenPath: '',
@@ -134,9 +134,13 @@ class _OrderListItemState extends State<OrderListItem> {
   }
 
   Widget buildEstadoDropdown() {
+    List<String> estadosValidos = Constants.estadoIconos.keys.toList();
+    String estadoActual = estadosValidos.contains(widget.pedido.estado)
+      ? widget.pedido.estado
+      : estadosValidos.first;
     return DropdownButton<String>(
-      value: widget.pedido.estado,
-      items: Constants.estadoIconos.keys.map((estado) {
+      value: estadoActual,
+      items: estadosValidos.map((estado) {
         return DropdownMenuItem<String>(
           value: estado,
           child: Row(

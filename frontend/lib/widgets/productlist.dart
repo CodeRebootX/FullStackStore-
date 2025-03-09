@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:frontend_flutter/commons/priceformat.dart';
-import '../data/models/product.dart';
-import '../commons/images.dart';
-import '../commons/constants.dart';
+import 'package:frontend_flutter/utils/priceformat.dart';
+import 'package:frontend_flutter/data/models/product.dart';
+import 'package:frontend_flutter/utils/images.dart';
+import 'package:frontend_flutter/utils/constants.dart';
 
 class ProductListItem extends StatelessWidget {
   final Product producto;

@@ -29,7 +29,6 @@ public class ProductController {
         return productService.updateProduct(id, productCreationRequest);
     }
 
-
     @GetMapping("/{id}")
     public Product getProduct(@PathVariable Long id) {
         return productService.getProduct(id).orElse(null);

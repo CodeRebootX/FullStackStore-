@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:frontend_flutter/providers/pedidoprovider.dart';
 import 'package:frontend_flutter/widgets/orderlist.dart';
 import 'package:frontend_flutter/data/models/order.dart';
-import 'package:frontend_flutter/commons/dialogs.dart';
-import 'package:frontend_flutter/commons/constants.dart';
+import 'package:frontend_flutter/utils/dialogs.dart';
+import 'package:frontend_flutter/utils/constants.dart';
 import 'package:provider/provider.dart';
 
 class MyOrdersPage extends StatefulWidget {
@@ -14,26 +14,40 @@ class MyOrdersPage extends StatefulWidget {
 }
 
 class _MyOrdersPageState extends State<MyOrdersPage> {
-  Future<void> _confirmAndChangeEstado(
-      Order pedido, String? nuevoEstado) async {
+
+  Future<void> _confirmAndChangeEstado(Order pedido, String? nuevoEstado) async {
+    
     if (nuevoEstado == null) return;
 
     bool? confirmado = await Dialogs.showConfirmDialog(
-        context: context,
-        title: "Confirmar cambio de estado",
-        content:
-            "¿Está seguro de cambiar el estado del pedido a '$nuevoEstado'?", style: Text(''));
+      context: context,
+      title: "Confirmar cambio de estado",
+      content: "¿Está seguro de cambiar el estado del pedido a '$nuevoEstado'?",
+      style: Text('')
+    );
 
     if (confirmado != true) return;
 
     await Dialogs.showLoadingSpinner(context);
 
-    setState(() {
+    try {
+      final pedidoProvider = Provider.of<PedidoProvider>(context, listen: false);
+      await pedidoProvider.updatePedidoEstado(pedido.id, nuevoEstado);
+
+      setState(() {
       pedido.estado = nuevoEstado;
     });
 
-    Dialogs.showSnackBar(context, "Estado actualizado a '$nuevoEstado'",
-        color: Constants.estadoColores[nuevoEstado]);
+    Dialogs.showSnackBar(
+        context, "Estado actualizado a '$nuevoEstado'",
+        color: Constants.estadoColores[nuevoEstado]
+    );
+
+    } catch (e) {
+      Dialogs.showSnackBar(
+        context, "Error al actualizar el pedido",
+        color: Constants.errorColor);
+    }    
   }
 
   @override
